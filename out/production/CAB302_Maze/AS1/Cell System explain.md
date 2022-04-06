@@ -1,4 +1,4 @@
-| Active | L | R | U | D | Decimal |
+| Inactive | L | R | U | D | Decimal |
 |--------|---|---|---|---|---------|
 | 0/1    | 0 | 0 | 0 | 0 | 0       |
 | 0/1    | 0 | 0 | 0 | 1 | 1       |
@@ -18,5 +18,3 @@
 | 0/1    | 1 | 1 | 1 | 1 | 15      |
 
 Maze Cell stores walls using the above bits. However, decimal is included as BitSets refer to bit location in their structure and do not present these bytes. It does however, print the decimal value when referred to via its other functions. Cells include a toString which will traverse every bit and build them into a string of 0's and 1's
-
-For active, 0 = Active, 1 = Inactive

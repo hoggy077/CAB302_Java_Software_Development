@@ -73,7 +73,7 @@ public class MazeCell implements AStNode {
 
     //Utility Methods
     public void ResetCell(){ CurrentCellWalls.clear(); }
-    public boolean IsActive(){return CurrentCellWalls.get(0);}
+    public boolean IsActive(){return !CurrentCellWalls.get(0);}
 
 
     //Astar shit
@@ -81,17 +81,25 @@ public class MazeCell implements AStNode {
     public AStNode[] NeighborsNodes() {
         List<AStNode> CardinalNeighbors = new ArrayList<>();
 
-        if(Pos.Y - 1 >= 0)//directly above
-            CardinalNeighbors.add(Maze.MazeMap[(int)Pos.Y-1][(int)Pos.X]);
+        if(Pos.Y - 1 >= 0) {//directly above
+            if(Maze.MazeMap[(int) Pos.Y - 1][(int) Pos.X].IsActive())
+                CardinalNeighbors.add(Maze.MazeMap[(int) Pos.Y - 1][(int) Pos.X]);
+        }
 
-        if(Pos.Y + 1 >= 0)//directly below
-            CardinalNeighbors.add(Maze.MazeMap[(int)Pos.Y+1][(int)Pos.X]);
+        if(Pos.Y + 1 >= 0) {//directly below
+            if(Maze.MazeMap[(int) Pos.Y + 1][(int) Pos.X].IsActive())
+                CardinalNeighbors.add(Maze.MazeMap[(int) Pos.Y + 1][(int) Pos.X]);
+        }
 
-        if(Pos.X - 1 >= 0)//left
-            CardinalNeighbors.add(Maze.MazeMap[(int)Pos.Y][(int)Pos.X-1]);
+        if(Pos.X - 1 >= 0) {//left
+            if(Maze.MazeMap[(int) Pos.Y][(int) Pos.X - 1].IsActive())
+                CardinalNeighbors.add(Maze.MazeMap[(int) Pos.Y][(int) Pos.X - 1]);
+        }
 
-        if(Pos.Y + 1 >= 0)//right
-            CardinalNeighbors.add(Maze.MazeMap[(int)Pos.Y][(int)Pos.X+1]);
+        if(Pos.Y + 1 >= 0) {//right
+            if(Maze.MazeMap[(int) Pos.Y][(int) Pos.X + 1].IsActive())
+                CardinalNeighbors.add(Maze.MazeMap[(int) Pos.Y][(int) Pos.X + 1]);
+        }
 
         return CardinalNeighbors.toArray(AStNode[]::new);
     }
