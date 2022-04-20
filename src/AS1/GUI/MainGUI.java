@@ -28,4 +28,31 @@ public class MainGUI {
         MazePanel.RenderGrid(Target);
 
     }
+
+    public void HomeGUI(){
+
+        ParentFrame = new JFrame("Mazebuilder3000");
+        ParentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JTabbedPane pane=new JTabbedPane();
+        JPanel MfromScratch = new JPanel();
+
+        MfromScratch.add(new JButton("Draw Maze!"));
+        MfromScratch.add(new JLabel("Please Enter Height"));
+        MfromScratch.add(new JTextField(2));
+        MfromScratch.add(new JLabel("Please Enter Width"));
+        MfromScratch.add(new JTextField(2));
+        MfromScratch.add(new JButton("Check Maze Path"));
+        MfromScratch.add(new JTextField("Maze Name"));
+        MfromScratch.add(new JTextField("Author Name"));
+        MfromScratch.add(new JRadioButton("Auto place logo"));
+        MfromScratch.add(new JButton("Save Maze"));
+        pane.add("Draw a Maze from Scratch",MfromScratch);
+        ParentFrame.getContentPane().add(pane);
+        ParentFrame.setPreferredSize(new Dimension(450,300));
+        ParentFrame.pack();
+        ParentFrame.setVisible(true);
+
+
+    }
+
 }

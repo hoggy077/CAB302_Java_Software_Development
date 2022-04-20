@@ -12,6 +12,7 @@ public class Main {
         //m.MazeMap[0][0].RemoveWall(MazeCell.CellWall.RIGHT);
 
         MainGUI gui = new MainGUI(m);
+        gui.HomeGUI();
 
     }
 }
