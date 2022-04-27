@@ -165,7 +165,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
             if (!LastCell.equals(new Point(Currentx, Currenty))) {
                 if (Currentx < sharedMaze.Width && Currenty < sharedMaze.Height) {
-                    System.out.println(String.format("Button:%s\nPosition: %sx %sy", e.getButton(), Currentx - LastCell.x, Currenty - LastCell.y));
+                    //System.out.println(String.format("Button:%s\nPosition: %sx %sy", e.getButton(), Currentx - LastCell.x, Currenty - LastCell.y));
                     Point Dir = new Point(Currentx - LastCell.x, Currenty - LastCell.y);
 
                     MazeCell.CellWall tmpcw = MazeCell.Point2Wall(Dir);
