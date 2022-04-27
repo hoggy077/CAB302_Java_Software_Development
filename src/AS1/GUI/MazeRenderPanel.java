@@ -55,7 +55,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 RenderingGraphics.fillRect(Cell_xs, Cell_ys, CellSize, CellSize);//Render the cell center
 
                 for (MazeCell.CellWall wall : MazeCell.CellWall.values()){
-                    if (Target.MazeMap[y][x].CheckWall(wall))
+                    if (Target.MazeMap[y][x].CheckWall(wall) == false) //false
                         UpdateCellWall(Target.MazeMap[y][x], wall);
                 }
 

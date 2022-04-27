@@ -5,9 +5,18 @@ public class Maze {
     public final int Height;
     public final int Width;
 
-    public Maze(int Height, int Width){
-        if(Height > 100 || Width > 100)
-            System.out.println("Bruh, you exceeded 100"); //--This needs tp be replaced with an exception throw
+    /**
+     * Generates a maze of Height × Width, within 100. This will auto populate the maze with cells.
+     * @param Height Integer in the bounds of 0 < Height <= 100
+     * @param Width Integer in the bounds of 0 < Width <= 100
+     */
+    public Maze(int Height, int Width) {
+        if (Height <= 0 || Height > 100 || Width > 100 || Width <= 0){
+            System.out.println("Values out of bounds"); //--This needs tp be replaced with an exception throw
+            this.Height = 0;
+            this.Width = 0;
+            return;
+        }
 
         this.Height = Height;
         this.Width = Width;

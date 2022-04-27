@@ -61,6 +61,12 @@ public class MazeCell implements AStNode {
     //endregion
 
     //region Constructors
+    /**
+     * Constructs a mazcell at a designated position within the Maze class
+     * @param position_X relative X position to the upper left cell
+     * @param position_Y relative Y position to the upper left cell
+     * @param Parent provides an internal reference to the parent maze for neighbor cell updating
+     */
     public MazeCell(float position_X, float position_Y, Maze Parent){
         CurrentPos = new CellPosition(position_X, position_Y);
         this.Parent = Parent;
@@ -74,14 +80,27 @@ public class MazeCell implements AStNode {
     //endregion
 
 
-    //Self explanatory
+
+    /**
+     * Provides a CellPosition class referring to the internal stored reference
+     * @return
+     */
     public CellPosition GetPosition(){ return CurrentPos;}
 
 
-    //1 bit means there is a wall, aka true
-    public boolean CheckWall(CellWall wall){return !CurrentCellWalls.get(wall.value);}
 
-    //AddWall calls AddNeighborWall, AddWall considers its neighbor cell, AddNeighborWall only add its own wall
+    /**
+     * Returns the cells wall state
+     * @param wall refers to the wall desired
+     * @return true = Wall, false = No wall
+     */
+    public boolean CheckWall(CellWall wall){return CurrentCellWalls.get(wall.value);}
+
+
+    /**
+     * Adds a wall to the cell in the designated direction. This should be used externally if looking to set a wall
+     * @param wall Intended wall to add
+     */
     public void AddWall(CellWall wall){
         if(!CurrentCellWalls.get(wall.value))
             CurrentCellWalls.set(wall.value,true);
@@ -89,12 +108,20 @@ public class MazeCell implements AStNode {
         if(Inbounds((int) CurrentPos.X + wall.Direction.x, (int) CurrentPos.Y + wall.Direction.y))
             Parent.MazeMap[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X + wall.Direction.x].AddNeighborWall(InverseWall(wall));
     }
+    /**
+     * SHOULD NOT BE CALLED. Unlike AddWall, this adds a cell wall without adding one of the neighboring cell. Only use this if desiring a 1 way wall effect
+     * @param wall Wall being added
+     */
     public void AddNeighborWall(CellWall wall){
         if(!CurrentCellWalls.get(wall.value))
             CurrentCellWalls.set(wall.value,true);
     }
 
-    //RemoveWall calls RemoveNeighborWall, RemoveWall considers its neighbor cell, RemoveNeighborWall only removes its own wall
+
+    /**
+     * Removes a wall to the cell in the designated direction. This should be used externally if looking to set a wall
+     * @param wall Intended wall to add
+     */
     public void RemoveWall(CellWall wall){
         if(CurrentCellWalls.get(wall.value))
             CurrentCellWalls.set(wall.value,false);
@@ -102,14 +129,22 @@ public class MazeCell implements AStNode {
         if(Inbounds((int) CurrentPos.X + wall.Direction.x, (int) CurrentPos.Y + wall.Direction.y))
             Parent.MazeMap[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X + wall.Direction.x].RemoveNeighborWall(InverseWall(wall));
     }
+    /**
+     * SHOULD NOT BE CALLED. Unlike RemoveWall, this removes a cell wall without removing one of the neighboring cell. Only use this if desiring a 1 way wall effect
+     * @param wall Wall being added
+     */
     public void RemoveNeighborWall(CellWall wall){
         if(CurrentCellWalls.get(wall.value))
             CurrentCellWalls.set(wall.value,false);
     }
 
 
-    //as the name describes
-    public CellWall InverseWall(CellWall wall){
+    /**
+     * Provides a cardinal opposite of the provided direction
+     * @param wall
+     * @return
+     */
+    public static CellWall InverseWall(CellWall wall){
         switch (wall){
             case DOWN : { return CellWall.UP; }
             case UP : { return CellWall.DOWN; }
@@ -119,11 +154,22 @@ public class MazeCell implements AStNode {
         return null;
     }
 
+    /**
+     * Provides an inbound check to determine if a wall being added/removed has an inbound neighbor
+     * @param x X position of the target cell
+     * @param y Y position of the target cell
+     * @return
+     */
     boolean Inbounds(int x, int y){
         return x >= 0 && x < Parent.Width && y >= 0 && y < Parent.Height;
     }
 
     //this just converts a point direction to a wall, its used for the UI system to turn dragging from cell to cell into a wall to be used
+    /**
+     * Provides a function to convert a Point vector into a CellWall, this should be only for UI to MazeCell methods
+     * @param Direction Point in the format of -1 to 1. -1 refers to the left or up, 1 refers to right or down
+     * @return
+     */
     public static CellWall Point2Wall(Point Direction){
         for (CellWall w: CellWall.values()) {
             if(w.Direction.equals(Direction))
@@ -134,8 +180,21 @@ public class MazeCell implements AStNode {
 
 
     //Utility Methods
-    public void ResetCell(){ CurrentCellWalls.clear(); }
+    /**
+     *Reset the cell to Active with all walls
+     */
+    public void ResetCell(){ CurrentCellWalls.set(0,CellState.ACTIVE.value); CurrentCellWalls.set(1,true); CurrentCellWalls.set(2,true); CurrentCellWalls.set(3,true); CurrentCellWalls.set(4,true); }
+
+    /**
+     * @return Returns the state of the cell.
+     */
     public boolean IsActive(){return !CurrentCellWalls.get(0);}
+
+    /**
+     * Sets the cell to a specific state
+     * @param state
+     */
+    public void SetActive(CellState state){ CurrentCellWalls.set(0, state.value); }
 
 
 
