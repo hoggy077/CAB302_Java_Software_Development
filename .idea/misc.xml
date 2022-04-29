@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavadocGenerationManager">
-    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/../../javadocssss" />
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/Javadoc" />
     <option name="OTHER_OPTIONS" value="-encoding UTF-8" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="corretto-17" project-jdk-type="JavaSDK">

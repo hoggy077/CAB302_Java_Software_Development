@@ -1,5 +1,7 @@
 package AS1.GUI;
 
+import AS1.Maze.Maze;
+
 /**
  * Methods for the gui to call
  */
@@ -9,9 +11,14 @@ public class DummyClasses {
      * Generates the window to draw the maze manually with window height and width, along with an Autoplaced image
      * @param height
      * @param width
-     * @param AutoplaceImage
+     * @param
      */
-    public void Draw(int height, int width, boolean AutoplaceImage){
+    public void Draw(int height, int width){
+        Maze m = new Maze(height,width);
+        //added to popup maze on drawmaze for video
+        //m.MazeMap[0][0].RemoveWall(MazeCell.CellWall.RIGHT);
+
+        MainGUI gui = new MainGUI(m);
 
 
 

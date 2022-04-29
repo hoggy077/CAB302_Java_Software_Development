@@ -42,6 +42,7 @@ public class MainGUI {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //calls method from dummy classes to draw
+                    buttoncalls.Draw(9, 9);
 
                 }
             };
@@ -159,10 +160,10 @@ public class MainGUI {
         //Gui for maze browser
 
         //table names
-        String[] columnNames = {"Maze Name", "Author", "Difficulty"};
+        String[] columnNames = {"Maze Name", "Author","Time Created","Last Edited","Difficulty"};
 
         //temp set of objects for table
-        Object[][] mazelist = {{"maze 1", "maze man", "Difficulty is hard"}, {"John", "Doe", "Rowing",}, {"Sue", "Black", "Knitting"}, {"Jane", "White", "Speed reading",}, {"Joe", "Brown", "Pool"}};
+        Object[][] mazelist = {{"maze 1", "maze man","01/01/22","28/04/22", "Hard"}, {"maze 2", "maze woman","02/01/19","25/04/22", "Hard"}};
         JPanel MazeBrowser = new JPanel(new BorderLayout());
         JTable MazeTable = new JTable(mazelist, columnNames);
         MazeBrowser.add(MazeTable, BorderLayout.CENTER);
