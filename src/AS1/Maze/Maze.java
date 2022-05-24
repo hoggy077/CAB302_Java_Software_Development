@@ -1,6 +1,12 @@
 package AS1.Maze;
 
+import AS1.AStar.AStNode;
+import AS1.AStar.AstarSolver;
+
+import java.util.*;
+
 public class Maze {
+    //region General Maze
     public MazeCell[][] MazeMap;
     public final int Height;
     public final int Width;
@@ -31,4 +37,41 @@ public class Maze {
             }
         }
     }
+
+    //region Maze generation
+    //Based on Randomized Prim's algorithm
+    /*public void GeneratedMaze(){
+
+        Random rnd = new Random();
+        int OriginX = rnd.nextInt(0,Width), OriginY = rnd.nextInt(0, Height);
+
+
+        List<MazeCell> OpenHeap = new ArrayList<MazeCell>();
+        List<MazeCell> ClosedHeap = new ArrayList<MazeCell>();
+
+        ClosedHeap.add(MazeMap[OriginY][OriginX]);
+        OpenHeap.addAll((Collection<? extends MazeCell>) MazeMap[OriginY][OriginX].NeighborsNodes());
+
+        while(OpenHeap.size() > 0){
+            int CellNum = rnd.nextInt(0, OpenHeap.size());
+            MazeCell cell = OpenHeap.get(CellNum);
+
+            //neighbors that are active
+            ArrayList<MazeCell> neighborsOfRandom = new ArrayList<>();
+            neighborsOfRandom.addAll((Collection<? extends MazeCell>) cell.NeighborsNodes());
+
+
+        }
+    }*/
+    //endregion
+
+    //endregion
+
+    //region Solver
+    private AstarSolver Solver = new AstarSolver();
+
+    public AStNode FindSolution(){
+        return null;
+    }
+    //endregion
 }

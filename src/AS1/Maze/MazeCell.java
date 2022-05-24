@@ -18,7 +18,7 @@ public class MazeCell implements AStNode {
     //10000 = Inactive. At this point the other bits have no value, design accordingly
     //endregion
     //region Class variables
-    private BitSet CurrentCellWalls =new BitSet(5);
+    private BitSet CurrentCellWalls = new BitSet(5);
     private CellPosition CurrentPos;
     private Maze Parent;
     //endregion
@@ -196,15 +196,46 @@ public class MazeCell implements AStNode {
      */
     public void SetActive(CellState state){ CurrentCellWalls.set(0, state.value); }
 
-
+    public int GetWallCount(){
+        int c = 0;
+        for (int i = 1; i <= 4; i++) {
+            if(CurrentCellWalls.get(i))
+                c++;
+        }
+        return c;
+    }
 
 
     //region A⭐ integration
     @Override
-    public AStNode[] NeighborsNodes(MazeCell[][] Map) {
-        List<AStNode> CardinalNeighbors = new ArrayList<>();
+    public ArrayList<AStNode> NeighborsNodes(boolean IsAccessible) {
+        MazeCell[][] Map = Parent.MazeMap;
+        ArrayList<AStNode> CardinalNeighbors = new ArrayList<>();
 
-        if(CurrentPos.Y - 1 >= 0) {//directly above
+        //#region Automated
+        for ( CellWall wall : CellWall.values() )
+        {
+            //if target it out of bounds
+            if(CurrentPos.Y + wall.Direction.y < 0 || CurrentPos.X + wall.Direction.x < 0)
+                continue;
+
+
+            MazeCell TemporaryCell = Map[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X +  wall.Direction.x];
+            if(!TemporaryCell.IsActive())   //If target isn't active
+                continue;
+
+            //If we want only accessible nodes, check the wall and add, else we want any, so add
+            if(IsAccessible && !CheckWall(wall))
+                CardinalNeighbors.add(TemporaryCell);
+            else
+                CardinalNeighbors.add(TemporaryCell);
+        }
+
+        return CardinalNeighbors;
+        //#endregion
+
+        //#region Per cell layout - Deprecated
+        /*if(CurrentPos.Y - 1 >= 0) {//directly above
             MazeCell tmpCellUp = Map[(int) CurrentPos.Y - 1][(int) CurrentPos.X];
             if(tmpCellUp.IsActive())
                 CardinalNeighbors.add(tmpCellUp);
@@ -228,7 +259,8 @@ public class MazeCell implements AStNode {
                 CardinalNeighbors.add(tmpCellRight);
         }
 
-        return CardinalNeighbors.toArray(AStNode[]::new);
+        return CardinalNeighbors;*/
+        //#endregion
     }
 
 
@@ -242,5 +274,11 @@ public class MazeCell implements AStNode {
 
     @Override
     public void UpdateVal(float G) { this.G = G; }
+
+    AStNode ParentNode;
+    @Override
+    public void UpdateParent(AStNode P) {
+        ParentNode = P;
+    }
     //endregion
 }

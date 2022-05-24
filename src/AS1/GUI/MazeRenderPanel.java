@@ -100,9 +100,9 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     }
 
     //literally just saves the buffer to an image file
-    public void SaveBuffer2File(){
+    public void SaveBuffer2File(String CompletePath){
         try {
-            File output = new File(".\\maze.png"); //--
+            File output = new File(CompletePath);
             ImageIO.write(BImg, "png", output);
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,8 +135,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
             LastCell = new Point((int) Math.floor(e.getX()/TotalCell),(int) Math.floor(e.getY()/TotalCell));
             isDragging = true;
         }
-        else if(e.getButton() == 2)
-            SaveBuffer2File();
+        /*else if(e.getButton() == 2)
+            SaveBuffer2File();*/
     }
 
     @Override
