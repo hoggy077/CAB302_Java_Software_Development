@@ -26,7 +26,7 @@ public class MainGUI {
         MazePanel.addMouseMotionListener(MazePanel);
 
 
-        ParentFrame.setSize(500,500);
+        ParentFrame.setSize(1000,1000);
         ParentFrame.setVisible(true);
 
         MazePanel.RenderGrid(Target);
@@ -35,55 +35,6 @@ public class MainGUI {
 
     DummyClasses buttoncalls = new DummyClasses();
     public void HomeGUI() {
-
-
-
-            ActionListener drawbutton = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //calls method from dummy classes to draw
-                    buttoncalls.Draw(9, 9);
-
-                }
-            };
-            ActionListener generatebutton = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //calls method from dummy classes to auto generate
-
-                }
-            };
-            ActionListener checkbutton = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                }
-            };
-            ActionListener savebutton = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //calls method from dummy classes to save maze
-
-                }
-            };
-            ActionListener generatepath = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //calls method from dummy classes to check path
-                }
-            };
-            ActionListener placeimage = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //calls method from dummy classes to place image
-                }
-            };
-            ActionListener autoplace = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                   //calls method from dummy classes to auto place image
-                }
-            };
 
 
 
@@ -96,30 +47,33 @@ public class MainGUI {
         JPanel MfromScratch = new JPanel();
 
         JButton Draw = new JButton("Draw Maze!");
-        Draw.addActionListener(drawbutton);
+
         MfromScratch.add(Draw);
 
+
         MfromScratch.add(new JLabel("Please Enter Height"));
-        MfromScratch.add(new JTextField(2));
+        JTextField HeightField = new JTextField(2);
+        MfromScratch.add(HeightField);
+
+
+
         MfromScratch.add(new JLabel("Please Enter Width"));
-        MfromScratch.add(new JTextField(2));
+        JTextField WidthField = new JTextField(2);
+        MfromScratch.add(WidthField);
 
         JButton Path = new JButton("Check Maze Path");
-        Path.addActionListener(generatepath);
         MfromScratch.add(Path);
 
         MfromScratch.add(new JTextField("Maze Name"));
         MfromScratch.add(new JTextField("Author Name"));
         JRadioButton aLogo = new JRadioButton("Auto place logo");
-        aLogo.addActionListener(autoplace);
+
         MfromScratch.add(aLogo);
 
         JButton placeLogo = new JButton("Place Image");
-        placeLogo.addActionListener(placeimage);
         MfromScratch.add(placeLogo);
 
         JButton saveMaze = new JButton("Save Maze");
-        saveMaze.addActionListener(savebutton);
         MfromScratch.add(saveMaze);
 
         //Gui for drawing a maze automatically
@@ -127,7 +81,6 @@ public class MainGUI {
 
 
         JButton autogenbut = new JButton("Generate a Maze!");
-        autogenbut.addActionListener(generatebutton);
         MAutoGen.add(autogenbut);
 
         MAutoGen.add(new JLabel("Please Enter Height"));
@@ -138,23 +91,86 @@ public class MainGUI {
 
 
         JButton AutoPath = new JButton("Check Maze Path");
-        AutoPath.addActionListener(generatepath);
         MAutoGen.add(AutoPath);
 
         MAutoGen.add(new JTextField("Maze Name"));
         MAutoGen.add(new JTextField("Author Name"));
 
         JRadioButton agLogo = new JRadioButton("Auto place logo");
-        agLogo.addActionListener(autoplace);
         MAutoGen.add(agLogo);
 
         JButton gplaceLogo = new JButton("Place Image");
-        gplaceLogo.addActionListener(placeimage);
         MAutoGen.add(gplaceLogo);
 
         JButton gsaveMaze = new JButton("Save Maze");
-        gsaveMaze.addActionListener(savebutton);
         MAutoGen.add(gsaveMaze);
+
+
+        ActionListener drawbutton = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //calls method from dummy classes to draw
+                String hs = HeightField.getText();
+                int hsp = Integer.parseInt(hs);
+
+                String ws = WidthField.getText();
+                int wsp = Integer.parseInt(ws);
+                buttoncalls.Draw(hsp, wsp);
+
+
+            }
+        };
+        ActionListener generatebutton = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //calls method from dummy classes to auto generate
+
+            }
+        };
+        ActionListener checkbutton = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        ActionListener savebutton = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //calls method from dummy classes to save maze
+
+            }
+        };
+        ActionListener generatepath = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //calls method from dummy classes to check path
+            }
+        };
+        ActionListener placeimage = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //calls method from dummy classes to place image
+            }
+        };
+        ActionListener autoplace = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //calls method from dummy classes to auto place image
+            }
+        };
+
+        Draw.addActionListener(drawbutton);
+        HeightField.addActionListener(drawbutton);
+        Path.addActionListener(generatepath);
+        aLogo.addActionListener(autoplace);
+        placeLogo.addActionListener(placeimage);
+        saveMaze.addActionListener(savebutton);
+        autogenbut.addActionListener(generatebutton);
+        AutoPath.addActionListener(generatepath);
+        agLogo.addActionListener(autoplace);
+        gplaceLogo.addActionListener(placeimage);
+        gplaceLogo.addActionListener(placeimage);
+        gsaveMaze.addActionListener(savebutton);
 
 
         //Gui for maze browser
