@@ -1,6 +1,7 @@
 package AS1.AStar;
 
 import java.awt.*;
+import java.util.Dictionary;
 
 public class AstarSolver {
 

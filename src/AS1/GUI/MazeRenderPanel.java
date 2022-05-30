@@ -40,7 +40,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     public void RenderGrid(Maze Target){//this needs to be replaced with the maze and not individual values
         sharedMaze = Target;
 
-        int NewBufferH = (WallWidth * 2) * Target.Height + CellSize * Target.Height, NewBufferW = (WallWidth * 2) * Target.Width + CellSize * Target.Width;
+        //int NewBufferH = (WallWidth * 2) * Target.Height + CellSize * Target.Height, NewBufferW = (WallWidth * 2) * Target.Width + CellSize * Target.Width;
+        int NewBufferH = TotalCell * Target.Height, NewBufferW = TotalCell * Target.Width;
         BufferedImage BImg2 = new BufferedImage(NewBufferW,NewBufferH,BufferedImage.TYPE_INT_ARGB);
         //BImg2.copyData(BImg.getRaster());
         BImg = BImg2;

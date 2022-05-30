@@ -2,37 +2,33 @@ package AS1.GUI;
 
 import AS1.Maze.Maze;
 import AS1.Maze.MazeCell;
-import jdk.jshell.execution.JdiExecutionControlProvider;
 
 import javax.swing.*;
-import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-final public class MainGUI {
-    JFrame ParentFrame;
+public class MainGUI {
+    final JFrame MazeFrame;
+    public final MazeRenderPanel MazeRPanel;
 
-
-    public MainGUI(Maze Target, int winwidth, int winheight){
-        ParentFrame = new JFrame("Cells-to-Paint");
-        ParentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public MainGUI(Maze Target){
+        MazeFrame = new JFrame("Cells-to-Paint");
+        MazeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Make the custom panel and set the background bc doing it in panel is a terrible idea
         MazeRenderPanel MazePanel = new MazeRenderPanel();
         MazePanel.setBackground(Color.BLACK);
-        ParentFrame.add(MazePanel);
+        MazeRPanel = (MazeRenderPanel) MazeFrame.add(MazePanel);
 
         MazePanel.addMouseListener(MazePanel);
         MazePanel.addMouseMotionListener(MazePanel);
-        ParentFrame.setVisible(true);
+        MazeFrame.setVisible(true);
 
-        ParentFrame.setSize(winwidth, winheight);
-        MazePanel.RenderGrid(Target);
+        Dimension d = new Dimension();
+        d.height = (MazePanel.TotalCell * Target.Height) + + (MazePanel.WallWidth * 2);
+        d.width = (MazePanel.TotalCell * Target.Width) + (MazePanel.WallWidth * 2);
 
-
+        MazeRPanel.setPreferredSize(d);
+        MazeFrame.pack();
+        MazeRPanel.RenderGrid(Target);
     }
-
-
-
 }

@@ -11,25 +11,22 @@ public class Menu {
 
     JFrame GuiFrame;
 
-    int hsp;
+    int hsp; //--evaluate these, i altered the int.parse calls, but do you really need to store them?
     int wsp;
-    MazeRenderPanel Render = new MazeRenderPanel();
 
+    MainGUI MazeGUI = null; //--Dont change this. MazeGUI shouldn't exist if the maze panel hasn't been made yet
 
-
-    //m.MazeMap[0][0].RemoveWall(MazeCell.CellWall.RIGHT);
-
-
+    
     DummyClasses buttoncalls = new DummyClasses();
     public void HomeGUI() {
 
-
-
+        //region Creation of GuiFrame
         GuiFrame = new JFrame("Mazebuilder3000");
         GuiFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JTabbedPane pane=new JTabbedPane();
+        //endregion
 
-
+        //region control creation
         //Gui for drawing a maze from scratch
         JPanel MfromScratch = new JPanel();
 
@@ -95,21 +92,26 @@ public class Menu {
 
         JButton gsaveMaze = new JButton("Save Maze");
         MAutoGen.add(gsaveMaze);
+        //endregion
 
-
+        //region Listener Event stuff
+        //region listener creation
         ActionListener drawbutton = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //calls method from dummy classes to draw
-                String hs = HeightField.getText();
-                hsp = Integer.parseInt(hs);
-                String ws = WidthField.getText();
-                wsp = Integer.parseInt(ws);
 
-                Maze m = new Maze(hsp,wsp);
-                MainGUI gui = new MainGUI(m, wsp *70, hsp * 70);
+                //--wrap stuff like this. Those input fields allow text, text wont parse. you need to catch that exception
+                try{
+                    hsp = Integer.parseInt(HeightField.getText());
+                    wsp = Integer.parseInt(WidthField.getText());
 
-
+                    MazeGUI = new MainGUI(new Maze(hsp,wsp));//--changed MainGUI so it auto sizes the render panel to fit the cells
+                }
+                catch (NumberFormatException parseException){
+                    //--do something about the exception, or ignore them.
+                    //--Honestly, we should make an error popup prompt for things like this, just to say "this string aint a number! fix it!"
+                }
             }
         };
         ActionListener generatebutton = new ActionListener() {
@@ -132,10 +134,12 @@ public class Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //calls method from dummy classes to save maze
+
+                if(MazeGUI == null) //--with the changes I made, this needs to be checked to avoid a "you pressed the button but there was no maze yet!"
+                    return;
+
                 String SaveName = (Name.getText() + ".png");
-
-                Render.SaveBuffer2File(SaveName);
-
+                MazeGUI.MazeRPanel.SaveBuffer2File(SaveName);//--Avoid making any "new" panels cause the MainGUI now provides the panel and frame as an accessible final variable
             }
         };
         ActionListener generatepath = new ActionListener() {
@@ -156,7 +160,9 @@ public class Menu {
                 //calls method from dummy classes to auto place image
             }
         };
+        //endregion
 
+        //region listener assignment
         Draw.addActionListener(drawbutton);
         HeightField.addActionListener(drawbutton);
         Path.addActionListener(generatepath);
@@ -169,7 +175,8 @@ public class Menu {
         gplaceLogo.addActionListener(placeimage);
         gplaceLogo.addActionListener(placeimage);
         gsaveMaze.addActionListener(savebutton);
-
+        //endregion
+        //endregion
 
         //Gui for maze browser
 
@@ -200,11 +207,5 @@ public class Menu {
         GuiFrame.setSize(450, 300);
 
         GuiFrame.setVisible(true);
-
-
     }
-
-
-
-
 }
