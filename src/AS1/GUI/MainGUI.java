@@ -30,6 +30,7 @@ final public class MainGUI {
         ParentFrame.setSize(winwidth, winheight);
         MazePanel.RenderGrid(Target);
 
+
     }
 
 

@@ -10,8 +10,10 @@ import java.awt.event.ActionListener;
 public class Menu {
 
     JFrame GuiFrame;
+
     int hsp;
     int wsp;
+    MazeRenderPanel Render = new MazeRenderPanel();
 
 
 
@@ -49,7 +51,11 @@ public class Menu {
         JButton Path = new JButton("Check Maze Path");
         MfromScratch.add(Path);
 
-        MfromScratch.add(new JTextField("Maze Name"));
+
+        JTextField Name = new JTextField("Maze Name", 6);
+        MfromScratch.add(Name);
+
+
         MfromScratch.add(new JTextField("Author Name"));
         JRadioButton aLogo = new JRadioButton("Auto place logo");
 
@@ -109,6 +115,9 @@ public class Menu {
         ActionListener generatebutton = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+
+
                 //calls method from dummy classes to auto generate
 
             }
@@ -123,6 +132,9 @@ public class Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //calls method from dummy classes to save maze
+                String SaveName = (Name.getText() + ".png");
+
+                Render.SaveBuffer2File(SaveName);
 
             }
         };

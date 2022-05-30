@@ -119,9 +119,6 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
     int TotalCell = CellSize + WallWidth * 2;
 
-
-
-
     @Override
     public void mouseClicked(MouseEvent e) {
         //region Debugging purposes
