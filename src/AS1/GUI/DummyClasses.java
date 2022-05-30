@@ -18,7 +18,7 @@ public class DummyClasses {
         //added to popup maze on drawmaze for video
         //m.MazeMap[0][0].RemoveWall(MazeCell.CellWall.RIGHT);
 
-        MainGUI gui = new MainGUI(m);
+
 
 
 
