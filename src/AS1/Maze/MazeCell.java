@@ -23,8 +23,6 @@ public class MazeCell implements AStNode {
     private Maze Parent;
     //endregion
 
-
-
     //region Cell related enums
     public enum CellWall{
         DOWN(4, new Point(0, 1)),

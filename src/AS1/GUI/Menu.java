@@ -30,53 +30,59 @@ public class Menu {
         //Gui for drawing a maze from scratch
         JPanel MfromScratch = new JPanel();
 
+        //Draw button on for scratch tab
         JButton Draw = new JButton("Draw Maze!");
-
         MfromScratch.add(Draw);
 
-
+        //Maze height field for scratch tab
         MfromScratch.add(new JLabel("Please Enter Height"));
         JTextField HeightField = new JTextField(2);
         MfromScratch.add(HeightField);
 
-
-
+        //Maze width field for scratch tab
         MfromScratch.add(new JLabel("Please Enter Width"));
         JTextField WidthField = new JTextField(2);
         MfromScratch.add(WidthField);
 
+        //Maze check path button for scratch tab
         JButton Path = new JButton("Check Maze Path");
         MfromScratch.add(Path);
 
 
+        //Name maze field for scratch tab
         JTextField Name = new JTextField("Maze Name", 6);
         MfromScratch.add(Name);
 
 
-        MfromScratch.add(new JTextField("Author Name"));
-        JRadioButton aLogo = new JRadioButton("Auto place logo");
+        //Author name field for scratch tab for db saving
+        JTextField Author = new JTextField("Author Name");
+        MfromScratch.add(Author);
 
+
+        //Auto place logo on maze start radio button for scratch tab
+        JRadioButton aLogo = new JRadioButton("Auto place logo");
         MfromScratch.add(aLogo);
 
+        //Place logo button for scratch tab
         JButton placeLogo = new JButton("Place Image");
         MfromScratch.add(placeLogo);
 
-        JButton saveMaze = new JButton("Save Maze");
+        //Save maze to png button for scratch tab
+        JButton saveMaze = new JButton("Save Maze To File");
         MfromScratch.add(saveMaze);
 
-        //Gui for drawing a maze automatically
+        //button to save maze data to database
+        JButton saveMazeDB = new JButton("Save Maze To Database");
+        MfromScratch.add(saveMazeDB);
+
+        //Gui for drawing a maze automatically, will do properly at a later point
         JPanel MAutoGen = new JPanel();
-
-
         JButton autogenbut = new JButton("Generate a Maze!");
         MAutoGen.add(autogenbut);
-
         MAutoGen.add(new JLabel("Please Enter Height"));
         MAutoGen.add(new JTextField(2));
         MAutoGen.add(new JLabel("Please Enter Width"));
         MAutoGen.add(new JTextField(2));
-
-
 
         JButton AutoPath = new JButton("Check Maze Path");
         MAutoGen.add(AutoPath);
@@ -90,7 +96,7 @@ public class Menu {
         JButton gplaceLogo = new JButton("Place Image");
         MAutoGen.add(gplaceLogo);
 
-        JButton gsaveMaze = new JButton("Save Maze");
+        JButton gsaveMaze = new JButton("Save Maze To File");
         MAutoGen.add(gsaveMaze);
         //endregion
 
@@ -109,6 +115,8 @@ public class Menu {
                     MazeGUI = new MainGUI(new Maze(hsp,wsp));//--changed MainGUI so it auto sizes the render panel to fit the cells
                 }
                 catch (NumberFormatException parseException){
+                    JOptionPane.showMessageDialog(null, "Please enter both width and height in numbers");
+
                     //--do something about the exception, or ignore them.
                     //--Honestly, we should make an error popup prompt for things like this, just to say "this string aint a number! fix it!"
                 }
@@ -117,7 +125,6 @@ public class Menu {
         ActionListener generatebutton = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
 
 
                 //calls method from dummy classes to auto generate
