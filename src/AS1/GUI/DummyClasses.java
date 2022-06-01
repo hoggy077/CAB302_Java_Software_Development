@@ -13,16 +13,7 @@ public class DummyClasses {
      * @param width
      * @param
      */
-    public void Draw(int height, int width){
-        Maze m = new Maze(height,width);
-        //added to popup maze on drawmaze for video
-        //m.MazeMap[0][0].RemoveWall(MazeCell.CellWall.RIGHT);
 
-
-
-
-
-    }
 
     /**
      * Generates a auto generated maze automatically using an algorithm

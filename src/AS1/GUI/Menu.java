@@ -17,7 +17,7 @@ public class Menu {
     MainGUI MazeGUI = null; //--Dont change this. MazeGUI shouldn't exist if the maze panel hasn't been made yet
 
     
-    DummyClasses buttoncalls = new DummyClasses();
+
     public void HomeGUI() {
 
         //region Creation of GuiFrame
@@ -118,7 +118,6 @@ public class Menu {
                     JOptionPane.showMessageDialog(null, "Please enter both width and height in numbers");
 
                     //--do something about the exception, or ignore them.
-                    //--Honestly, we should make an error popup prompt for things like this, just to say "this string aint a number! fix it!"
                 }
             }
         };
