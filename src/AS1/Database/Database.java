@@ -56,7 +56,7 @@ public class Database {
                     + "authorName VARCHAR(30),"
                     + "mazeName VARCHAR(20),"
                     + "dateCreated DATE,"
-                    + "dateLastEdited DATE,"
+                    + "dateEdited DATE,"
                     + "image VARBINARY)";
 
     public void createTable() throws SQLException {
