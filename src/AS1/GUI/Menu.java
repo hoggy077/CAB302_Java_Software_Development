@@ -1,11 +1,19 @@
 package AS1.GUI;
 
+
+import AS1.Database.Database;
 import AS1.Maze.Maze;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 public class Menu {
 
@@ -50,13 +58,13 @@ public class Menu {
 
 
         //Name maze field for scratch tab
-        JTextField Name = new JTextField("Maze Name", 6);
-        MfromScratch.add(Name);
+        JTextField mazeName = new JTextField("Maze Name", 6);
+        MfromScratch.add(mazeName);
 
 
         //Author name field for scratch tab for db saving
-        JTextField Author = new JTextField("Author Name");
-        MfromScratch.add(Author);
+        JTextField mazeAuthor = new JTextField("Author Name");
+        MfromScratch.add(mazeAuthor);
 
 
         //Auto place logo on maze start radio button for scratch tab
@@ -144,7 +152,7 @@ public class Menu {
                 if(MazeGUI == null) //--with the changes I made, this needs to be checked to avoid a "you pressed the button but there was no maze yet!"
                     return;
 
-                String SaveName = (Name.getText() + ".png");
+                String SaveName = (mazeName.getText() + ".png");
                 MazeGUI.MazeRPanel.SaveBuffer2File(SaveName);//--Avoid making any "new" panels cause the MainGUI now provides the panel and frame as an accessible final variable
             }
         };
@@ -166,6 +174,31 @@ public class Menu {
                 //calls method from dummy classes to auto place image
             }
         };
+        ActionListener databaseSave = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = mazeName.getText();
+                String author = mazeAuthor.getText();
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDateTime datecreate = LocalDateTime.now();
+                LocalDateTime datemod = LocalDateTime.now();
+
+                final String INSERT_NAME = "INSERT INTO maze(authorName, mazeName, dateCreated, dateEdited) VALUES (?, ?, ?, ?);";
+                try {
+                    Connection connection = Database.getInstance();
+                    PreparedStatement st = connection.prepareStatement("INSERT INTO maze (authorName, mazeName, dateCreated, dateEdited) VALUES (?, ?, ?, ?)");
+                    st.clearParameters();
+                    st.setString(1, name);
+                    st.setString(2, author);
+                    st.setString(3, dtf.format(datecreate));
+                    st.setString(4, dtf.format(datemod));
+                    st.executeUpdate();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
         //endregion
 
         //region listener assignment
@@ -181,6 +214,7 @@ public class Menu {
         gplaceLogo.addActionListener(placeimage);
         gplaceLogo.addActionListener(placeimage);
         gsaveMaze.addActionListener(savebutton);
+        saveMazeDB.addActionListener(databaseSave);
         //endregion
         //endregion
 
