@@ -240,8 +240,12 @@ public class MazeCell implements AStNode {
                 continue;
 
             //If we want only accessible nodes, check the wall and add, else we want any, so add
-            if(IsAccessible && !CheckWall(wall))
-                CardinalNeighbors.add(TemporaryCell);
+            if(IsAccessible){
+                if(CheckWall(wall))
+                    continue;
+                else
+                    CardinalNeighbors.add(TemporaryCell);
+            }
             else
                 CardinalNeighbors.add(TemporaryCell);
         }

@@ -5,29 +5,73 @@ import AS1.Maze.MazeCell;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 public class MainGUI {
     final JFrame MazeFrame;
     public final MazeRenderPanel MazeRPanel;
 
+    static final int MaxWinWidth = 500;
+    static final int MaxWinHeight = 500;
+
     public MainGUI(Maze Target){
         MazeFrame = new JFrame("Cells-to-Paint");
-        MazeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        MazeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        MazeFrame.setMinimumSize(new Dimension(250,250));
 
-        //Make the custom panel and set the background bc doing it in panel is a terrible idea
+        MazeFrame.getContentPane().addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                MazeRPanel.WindowUpdate(MazeFrame.getContentPane().getWidth(), MazeFrame.getContentPane().getHeight());
+                MazeRPanel.RenderGrid(Target);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        });
+
+
+        MazeFrame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+
         MazeRenderPanel MazePanel = new MazeRenderPanel();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+
         MazePanel.setBackground(Color.BLACK);
-        MazeRPanel = (MazeRenderPanel) MazeFrame.add(MazePanel);
+        MazeFrame.add(MazePanel,gbc);
+        MazeRPanel = (MazeRenderPanel)MazeFrame.getContentPane().getComponent(0);
 
         MazePanel.addMouseListener(MazePanel);
         MazePanel.addMouseMotionListener(MazePanel);
         MazeFrame.setVisible(true);
 
-        Dimension d = new Dimension();
-        d.height = (MazePanel.TotalCell * Target.Height) + + (MazePanel.WallWidth * 2);
-        d.width = (MazePanel.TotalCell * Target.Width) + (MazePanel.WallWidth * 2);
+        //Dimension d = new Dimension();
+        //d.height = (MazePanel.TotalCellHeight * Target.Height) + (MazePanel.WallWidth * 2);
+        //d.width = (MazePanel.TotalCellWidth * Target.Width) + (MazePanel.WallWidth * 2);
 
-        MazeRPanel.setPreferredSize(d);
+        //MazeRPanel.setPreferredSize(d);
+        MazeRPanel.setPreferredSize(new Dimension(MazeFrame.getContentPane().getWidth(),MazeFrame.getContentPane().getHeight()));
         MazeFrame.pack();
         MazeRPanel.RenderGrid(Target);
     }
