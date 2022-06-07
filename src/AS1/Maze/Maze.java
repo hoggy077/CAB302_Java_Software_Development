@@ -68,10 +68,8 @@ public class Maze {
     //endregion
 
     //region Solver
-    private AstarSolver Solver = new AstarSolver();
-
-    public AStNode FindSolution(){
-        return null;
+    public AStNode FindSolution() {
+        return AstarSolver.FindPath(MazeMap[0][0], MazeMap[Height-1][Width-1]);
     }
     //endregion
 }

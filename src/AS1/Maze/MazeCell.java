@@ -21,6 +21,7 @@ public class MazeCell implements AStNode {
     private BitSet CurrentCellWalls = new BitSet(5);
     private CellPosition CurrentPos;
     private Maze Parent;
+
     //endregion
 
     //region Cell related enums
@@ -76,15 +77,6 @@ public class MazeCell implements AStNode {
         CurrentCellWalls.set(4,true);
     }
     //endregion
-
-
-
-    /**
-     * Provides a CellPosition class referring to the internal stored reference
-     * @return
-     */
-    public CellPosition GetPosition(){ return CurrentPos;}
-
 
 
     /**
@@ -205,6 +197,31 @@ public class MazeCell implements AStNode {
 
 
     //region A⭐ integration
+    /**
+     * Provides a CellPosition class referring to the internal stored reference
+     * @return
+     */
+    @Override
+    public CellPosition GetPosition(){ return CurrentPos;}
+
+    @Override
+    public int compareFTo(AStNode comp) {
+        if(F == comp.GetF())
+            return 0;
+
+        if(F < comp.GetF())
+            return -1;
+
+        return 1;
+    }
+
+    @Override
+    public int comparePosTo(AStNode n) {
+        if(n.GetPosition() == CurrentPos)
+            return 1;
+        return 0;
+    }
+
     @Override
     public ArrayList<AStNode> NeighborsNodes(boolean IsAccessible) {
         MazeCell[][] Map = Parent.MazeMap;
@@ -261,17 +278,30 @@ public class MazeCell implements AStNode {
         //#endregion
     }
 
+    @Override
+    public float GetF() { return F; }
+    @Override
+    public float GetG() { return G; }
 
-    float G = 0; //G is our Distance to this node
-    float H = 0; //H is our distance to the end
+    //G = 1 because the cost of moving from 1 cell to another should be constant cost,
+    float G = 0; //G is our Distance to this node/our cost to move cells
+    float H = 0; //H is our distance to the end, this is basically Cardinal Manhattan Distance
     float F = G + H;
 
     @Override
-    public float GetHeuristic() { return F; }
-
+    public void UpdateHeuristic(CellPosition EndGoal, float G)
+    {
+        this.G = G;
+        CellPosition r = CurrentPos.Difference(EndGoal);
+        H = Math.abs(r.X) + Math.abs(r.Y);
+    }
 
     @Override
-    public void UpdateVal(float G) { this.G = G; }
+    public void UpdateHeuristic(int X, int Y, float G)
+    {
+        UpdateHeuristic(new CellPosition(X, Y), G);
+    }
+
 
     AStNode ParentNode;
     @Override

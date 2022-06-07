@@ -56,7 +56,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 RenderingGraphics.fillRect(Cell_xs, Cell_ys, CellSize, CellSize);//Render the cell center
 
                 for (MazeCell.CellWall wall : MazeCell.CellWall.values()){
-                    if (Target.MazeMap[y][x].CheckWall(wall) == false) //false
+                    if (!Target.MazeMap[y][x].CheckWall(wall)) //false
                         UpdateCellWall(Target.MazeMap[y][x], wall);
                 }
 
@@ -129,17 +129,21 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getButton() == 1) {//Left mouse button
+        if(e.getButton() == 3) {
+            sharedMaze.FindSolution();
+            return;
+        }
+
+        if(e.getButton() == 1){// || e.getButton() == 3){
             LastCell = new Point((int) Math.floor(e.getX()/TotalCell),(int) Math.floor(e.getY()/TotalCell));
             isDragging = true;
+            return;
         }
-        /*else if(e.getButton() == 2)
-            SaveBuffer2File();*/
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(e.getButton() == 1)//Left mouse button
+        if(e.getButton() == 1 || e.getButton() == 3)//Left mouse button & Right mouse button
             isDragging = false;
     }
 
@@ -170,7 +174,15 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                     if(tmpcw == null)
                         return;
 
-                    sharedMaze.MazeMap[LastCell.y][LastCell.x].RemoveWall(tmpcw);
+                    switch (e.getButton()){
+                        case 1:
+                            sharedMaze.MazeMap[LastCell.y][LastCell.x].RemoveWall(tmpcw);
+                            break;
+
+                        case 2:
+                            sharedMaze.MazeMap[LastCell.y][LastCell.x].AddWall(tmpcw);
+                            break;
+                    }
 
                     LastCell = new Point(Currentx, Currenty);
 
