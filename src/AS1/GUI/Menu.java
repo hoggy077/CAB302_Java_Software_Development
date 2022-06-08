@@ -185,8 +185,12 @@ public class Menu {
                 LocalDateTime datemod = LocalDateTime.now();
 
                 final String INSERT_NAME = "INSERT INTO maze(authorName, mazeName, dateCreated, dateEdited) VALUES (?, ?, ?, ?);";
-                //separating database insertion into serparate class for testing purposes
-                DatabaseCalls.Insert(name, author, datecreate, datemod);
+
+                try {
+                    DatabaseCalls.Insert(name, author, datecreate, datemod);
+                }catch (IllegalArgumentException illegalArgumentException){
+                    JOptionPane.showMessageDialog(null, "Please input the correct info into the relevant field");
+                }
             }
         };
 
