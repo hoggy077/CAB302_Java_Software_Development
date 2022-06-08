@@ -2,6 +2,7 @@ package AS1.GUI;
 
 
 import AS1.Database.Database;
+import AS1.Database.DatabaseCalls;
 import AS1.Maze.Maze;
 
 import javax.swing.*;
@@ -184,18 +185,8 @@ public class Menu {
                 LocalDateTime datemod = LocalDateTime.now();
 
                 final String INSERT_NAME = "INSERT INTO maze(authorName, mazeName, dateCreated, dateEdited) VALUES (?, ?, ?, ?);";
-                try {
-                    Connection connection = Database.getInstance();
-                    PreparedStatement st = connection.prepareStatement("INSERT INTO maze (authorName, mazeName, dateCreated, dateEdited) VALUES (?, ?, ?, ?)");
-                    st.clearParameters();
-                    st.setString(1, name);
-                    st.setString(2, author);
-                    st.setString(3, dtf.format(datecreate));
-                    st.setString(4, dtf.format(datemod));
-                    st.executeUpdate();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+                //separating database insertion into serparate class for testing purposes
+                DatabaseCalls.Insert(name, author, datecreate, datemod);
             }
         };
 

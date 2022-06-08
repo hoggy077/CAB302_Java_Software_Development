@@ -25,5 +25,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="xerial.sqlite.jdbc" level="project" />
+    <orderEntry type="library" name="ant-junitlauncher-1.10.12" level="project" />
+    <orderEntry type="library" name="junit-platform-launcher-1.8.1" level="project" />
   </component>
 </module>
