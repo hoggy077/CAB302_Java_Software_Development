@@ -69,17 +69,20 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
     boolean HasSolution = false;
     AStNode StartN, EndPath;
+    int CurrentMinimumCells = 0;
+    public int GetMinimumSolution() {return  CurrentMinimumCells;}
     public void RenderSolution(AStNode StartNode, AStNode Path){
         HasSolution = true;
         StartN = StartNode;
         EndPath = Path;
+        CurrentMinimumCells = 0;
 
         AStNode Current = Path;
         int Cell_xs, Cell_ys;
 
         RenderingGraphics.setColor(new Color(138, 201, 38));
         while (Current.comparePosTo(StartNode) != 1){
-
+            CurrentMinimumCells++;
             CellPosition pos = Current.GetPosition();
             Cell_xs = (int) (((WallWidth *2) * (pos.X+1)) + (CellWidth * pos.X));
             Cell_ys = (int) (((WallWidth *2) * (pos.Y+1)) + (CellHeight * pos.Y));
@@ -92,7 +95,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         CellPosition pos = Current.GetPosition();
         Cell_xs = (int) (((WallWidth *2) * (pos.X+1)) + (CellWidth * pos.X));
         Cell_ys = (int) (((WallWidth *2) * (pos.Y+1)) + (CellHeight * pos.Y));
-
+        CurrentMinimumCells++; //Comment this to not include the start in the cell count
         RenderingGraphics.fillRect(Cell_xs, Cell_ys, CellWidth, CellHeight);
 
         RenderingGraphics.setColor(Color.WHITE);

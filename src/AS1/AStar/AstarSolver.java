@@ -23,7 +23,7 @@ public class AstarSolver {
             OpenHeap.remove(0);
             ClosedHeap.add(Current);
 
-            System.out.println("Cell: %s %s".formatted(Current.GetPosition().X, Current.GetPosition().Y));
+            //System.out.println("Cell: %s %s".formatted(Current.GetPosition().X, Current.GetPosition().Y));
 
             if(Current.comparePosTo(End) == 1)
                 return Current;

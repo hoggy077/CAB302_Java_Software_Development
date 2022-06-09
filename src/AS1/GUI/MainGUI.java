@@ -1,5 +1,6 @@
 package AS1.GUI;
 
+import AS1.AStar.AStNode;
 import AS1.Maze.Maze;
 import AS1.Maze.MazeCell;
 
@@ -79,4 +80,14 @@ public class MainGUI {
     public String RequestMazeCellString(){
         return Reference.GetCellString();
     }
+
+    public AStNode RequestSolution(boolean RenderSolution)
+    {
+        AStNode EndOfPath = Reference.FindSolution();
+        if(RenderSolution && EndOfPath != null)
+            MazeRPanel.RenderSolution(Reference.MazeMap[0][0], EndOfPath);//0,0 is top left, solution target is the bottom right
+        return EndOfPath;
+    }
+
+    public int RequestSolutionCount(){ return MazeRPanel.GetMinimumSolution(); }
 }
