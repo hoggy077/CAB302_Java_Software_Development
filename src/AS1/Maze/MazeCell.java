@@ -3,6 +3,7 @@ package AS1.Maze;
 import AS1.AStar.AStNode;
 
 import java.awt.*;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -76,8 +77,32 @@ public class MazeCell implements AStNode {
         CurrentCellWalls.set(3,true);
         CurrentCellWalls.set(4,true);
     }
+    public MazeCell(float position_X, float position_Y, Maze Parent, String WallBytes) throws InvalidParameterException {
+        CurrentPos = new CellPosition(position_X, position_Y);
+        this.Parent = Parent;
+
+        for (int index = 0; index <= CellWall.values().length; index++){
+            switch (WallBytes.charAt(index)){
+                case '0':
+                    CurrentCellWalls.set(index,false);
+                    break;
+                case '1':
+                    CurrentCellWalls.set(index,true);
+                    break;
+                default:
+                    throw new InvalidParameterException("Invalid Cell wall bit found in cell byte %s %s".formatted(position_X, position_Y));
+            }
+        }
+    }
     //endregion
 
+    @Override
+    public String toString(){
+        StringBuilder stb = new StringBuilder();
+        for (int i = 0; i <= 4; i++)
+            stb.append(CurrentCellWalls.get(i) ? "1" : "0");
+        return  stb.toString();
+    }
 
     /**
      * Returns the cells wall state

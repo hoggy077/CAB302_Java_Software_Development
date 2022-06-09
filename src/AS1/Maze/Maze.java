@@ -16,18 +16,55 @@ public class Maze {
      * @param Height Integer in the bounds of 0 < Height <= 100
      * @param Width Integer in the bounds of 0 < Width <= 100
      */
-    public Maze(int Height, int Width) {
-        if (Height <= 0 || Height > 100 || Width > 100 || Width <= 0){
-            System.out.println("Values out of bounds"); //--This needs tp be replaced with an exception throw
-            this.Height = 0;
-            this.Width = 0;
-            return;
+    public Maze(int Height, int Width) throws IllegalArgumentException{
+        if (Height < 10 || Height > 100 || Width > 100 || Width < 10){
+            throw new IllegalArgumentException("Height of Width fails to fit within accepted bounds of 10 to 100");
         }
 
         this.Height = Height;
         this.Width = Width;
         MazeMap = new MazeCell[Height][Width];
         PopulateMap();
+    }
+
+    public Maze(int Height, int Width, String CellBytes)
+    {
+        if (Height < 10 || Height > 100 || Width > 100 || Width < 10){
+            throw new IllegalArgumentException("Height of Width fails to fit within accepted bounds of 10 to 100");
+        }
+
+        this.Height = Height;
+        this.Width = Width;
+        MazeMap = new MazeCell[Height][Width];
+        //total = height * width
+        StringBuilder stb = new StringBuilder();
+        for (int y = 0; y < Height; y++){
+            for (int x = 0; x < Width; x++){
+                stb.setLength(0);
+                //bit strings are 5 characters per cell
+                for(int cell = 0; cell < 5; cell++)
+                {
+                    int Index = (y * (Width * 5)) + (x * 5) + cell;
+
+                    if(Index >= 490)
+                        System.out.println("e");
+
+                    stb.append(CellBytes.charAt(Index));
+
+                }
+                MazeMap[y][x] = new MazeCell(x, y, this, stb.toString());
+            }
+        }
+    }
+
+    public String GetCellString(){
+        String Result = "";
+        for (int y = 0; y < Height; y++){
+            for (int x = 0; x < Width; x++){
+                Result += MazeMap[y][x].toString();
+            }
+        }
+        return Result;
     }
 
     private void PopulateMap(){

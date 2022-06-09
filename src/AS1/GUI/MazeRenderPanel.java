@@ -159,7 +159,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 break;
 
             case 2:
-                sharedMaze.FindSolution();
+                //sharedMaze.FindSolution();
+                String response = sharedMaze.GetCellString();
                 break;
 
             case 3:
