@@ -6,14 +6,17 @@ import AS1.Database.DatabaseCalls;
 import AS1.Maze.Maze;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Vector;
 
 
 public class Menu {
@@ -216,23 +219,75 @@ public class Menu {
         //Gui for maze browser
 
         //table names
-        String[] columnNames = {"Maze Name", "Author","Time Created","Last Edited","Difficulty"};
+        String[] columnNames = {"Maze Name", "Author"};
 
         //temp set of objects for table
-        Object[][] mazelist = {{"maze 1", "maze man","01/01/22","28/04/22", "Hard"}, {"maze 2", "maze woman","02/01/19","25/04/22", "Hard"}};
+
+
+
         JPanel MazeBrowser = new JPanel(new BorderLayout());
-        JTable MazeTable = new JTable(mazelist, columnNames);
-        MazeBrowser.add(MazeTable, BorderLayout.CENTER);
-        MazeBrowser.add(MazeTable.getTableHeader(), BorderLayout.NORTH);
+
+
+
+
+
+
         JMenuBar mb = new JMenuBar();
         JMenu eo = new JMenu("Maze Export Options");
-        JMenuItem exporttofile = new JMenuItem("Export Selected to File");
-        JMenuItem exporttodb = new JMenuItem("Export Selected to DataBase");
-        eo.add(exporttofile); eo.add(exporttodb);
+        JMenuItem exporttofile = new JMenuItem("Import Database");
+        eo.add(exporttofile);
         mb.add(eo);
         MazeBrowser.add(mb, BorderLayout.SOUTH);
+        JTable table = new JTable(new DefaultTableModel(columnNames, 0));
+        ActionListener importDb = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Connection connection = null;
+                ResultSet rs = null;
+                try {
+                    connection = Database.getInstance();
+                    PreparedStatement st = connection.prepareStatement("SELECT authorName, mazeName, dateCreated, dateEdited FROM maze");
+                    rs = st.executeQuery();
 
 
+
+                    while(rs.next()){
+
+                        //assigning the column info to strings
+                        String authorName = rs.getString("authorName");
+                        String mazeName = rs.getString("mazeName");
+                        String dateCreated = rs.getString("dateCreated");
+                        String dateEdited = rs.getString("dateEdited");
+
+
+                        Object[] mazelists = {authorName, mazeName, dateCreated, dateEdited};
+
+
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+
+                        model.addRow(mazelists);
+
+
+                    }
+
+
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.addRow(new Object[]{mazeName, mazeAuthor});
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        };
+
+
+        MazeBrowser.add(table, BorderLayout.CENTER);
+        MazeBrowser.add(table.getTableHeader(), BorderLayout.NORTH);
+
+
+        exporttofile.addActionListener(importDb);
         pane.add("Draw a Maze from Scratch",MfromScratch);
         pane.add("Generate a Maze", MAutoGen);
         pane.add("Maze List", MazeBrowser);
