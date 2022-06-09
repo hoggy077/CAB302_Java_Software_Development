@@ -219,7 +219,7 @@ public class Menu {
         //Gui for maze browser
 
         //table names
-        String[] columnNames = {"Maze Name", "Author"};
+        String[] columnNames = {"Maze Name", "Author", "Date Created", "Date Edited"};
 
         //temp set of objects for table
 
