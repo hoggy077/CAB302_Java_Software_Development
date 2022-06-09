@@ -11,14 +11,13 @@ import java.awt.event.ComponentListener;
 public class MainGUI {
     final JFrame MazeFrame;
     public final MazeRenderPanel MazeRPanel;
-
-    static final int MaxWinWidth = 500;
-    static final int MaxWinHeight = 500;
+    Maze Reference;
 
     public MainGUI(Maze Target){
+        Reference = Target;
         MazeFrame = new JFrame("Cells-to-Paint");
         MazeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        MazeFrame.setMinimumSize(new Dimension(250,250));
+        MazeFrame.setMinimumSize(new Dimension(500,500));
 
         MazeFrame.getContentPane().addComponentListener(new ComponentListener() {
             @Override
@@ -74,5 +73,10 @@ public class MainGUI {
         MazeRPanel.setPreferredSize(new Dimension(MazeFrame.getContentPane().getWidth(),MazeFrame.getContentPane().getHeight()));
         MazeFrame.pack();
         MazeRPanel.RenderGrid(Target);
+    }
+
+
+    public String RequestMazeCellString(){
+        return Reference.GetCellString();
     }
 }

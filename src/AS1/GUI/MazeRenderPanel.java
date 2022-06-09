@@ -31,9 +31,11 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
 
     //region Custom Functionality
-    int WallWidth = 5; //Px / wall
-    int CellWidth = 45; //Px / cell W,
-    int CellHeight = 45; //Px / cell H
+    //These are automatically set on window creation, but just in case they are set
+    //units are Px/value. Eg Px/Wall
+    int WallWidth = 5; //All walls are twice the width when rendered, this is a 1 Wall per cell basis and not 1 Wall between 2 cells. Technically they're 2 walls
+    int CellWidth = 45;
+    int CellHeight = 45;
 
     public void WindowUpdate(int XSize, int YSize){
         XSize -= WallWidth * 2;
@@ -160,7 +162,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
             case 2:
                 //sharedMaze.FindSolution();
-                String response = sharedMaze.GetCellString();
+                //String response = sharedMaze.GetCellString();
                 break;
 
             case 3:
