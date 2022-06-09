@@ -117,11 +117,12 @@ public class MazeCell implements AStNode {
      * @param wall Intended wall to add
      */
     public void AddWall(CellWall wall){
-        if(!CurrentCellWalls.get(wall.value))
-            CurrentCellWalls.set(wall.value,true);
+        if(Parent.Inbounds((int) CurrentPos.X + wall.Direction.x, (int) CurrentPos.Y + wall.Direction.y)) {
+            if(!CurrentCellWalls.get(wall.value))
+                CurrentCellWalls.set(wall.value,true);
 
-        if(Inbounds((int) CurrentPos.X + wall.Direction.x, (int) CurrentPos.Y + wall.Direction.y))
             Parent.MazeMap[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X + wall.Direction.x].AddNeighborWall(InverseWall(wall));
+        }
     }
     /**
      * SHOULD NOT BE CALLED. Unlike AddWall, this adds a cell wall without adding one of the neighboring cell. Only use this if desiring a 1 way wall effect
@@ -138,11 +139,12 @@ public class MazeCell implements AStNode {
      * @param wall Intended wall to add
      */
     public void RemoveWall(CellWall wall){
-        if(CurrentCellWalls.get(wall.value))
-            CurrentCellWalls.set(wall.value,false);
+        if(Parent.Inbounds((int) CurrentPos.X + wall.Direction.x, (int) CurrentPos.Y + wall.Direction.y)) {
+            if(CurrentCellWalls.get(wall.value))
+                CurrentCellWalls.set(wall.value,false);
 
-        if(Inbounds((int) CurrentPos.X + wall.Direction.x, (int) CurrentPos.Y + wall.Direction.y))
             Parent.MazeMap[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X + wall.Direction.x].RemoveNeighborWall(InverseWall(wall));
+        }
     }
     /**
      * SHOULD NOT BE CALLED. Unlike RemoveWall, this removes a cell wall without removing one of the neighboring cell. Only use this if desiring a 1 way wall effect
@@ -167,16 +169,6 @@ public class MazeCell implements AStNode {
             case RIGHT : { return CellWall.LEFT; }
         }
         return null;
-    }
-
-    /**
-     * Provides an inbound check to determine if a wall being added/removed has an inbound neighbor
-     * @param x X position of the target cell
-     * @param y Y position of the target cell
-     * @return
-     */
-    boolean Inbounds(int x, int y){
-        return x >= 0 && x < Parent.Width && y >= 0 && y < Parent.Height;
     }
 
     //this just converts a point direction to a wall, its used for the UI system to turn dragging from cell to cell into a wall to be used
@@ -211,15 +203,6 @@ public class MazeCell implements AStNode {
      */
     public void SetActive(CellState state){ CurrentCellWalls.set(0, state.value); }
 
-    public int GetWallCount(){
-        int c = 0;
-        for (int i = 1; i <= 4; i++) {
-            if(CurrentCellWalls.get(i))
-                c++;
-        }
-        return c;
-    }
-
 
     //region A⭐ integration
     /**
@@ -230,11 +213,14 @@ public class MazeCell implements AStNode {
     public CellPosition GetPosition(){ return CurrentPos;}
 
     @Override
-    public int compareFTo(AStNode comp) {
-        if(F == comp.GetF())
-            return 0;
+    public int compareTo(AStNode comp) {
+        if(F() == comp.GetF())
+            if (H < comp.GetH())
+                return 1;
+            else
+                return 0;
 
-        if(F < comp.GetF())
+        if(F() < comp.GetF())
             return -1;
 
         return 1;
@@ -259,6 +245,8 @@ public class MazeCell implements AStNode {
             if(CurrentPos.Y + wall.Direction.y < 0 || CurrentPos.X + wall.Direction.x < 0)
                 continue;
 
+            if(CurrentPos.Y + wall.Direction.y >= Parent.Height || CurrentPos.X + wall.Direction.x >= Parent.Width)
+                continue;
 
             MazeCell TemporaryCell = Map[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X +  wall.Direction.x];
             if(!TemporaryCell.IsActive())   //If target isn't active
@@ -308,14 +296,16 @@ public class MazeCell implements AStNode {
     }
 
     @Override
-    public float GetF() { return F; }
+    public float GetF() { return F(); }
     @Override
     public float GetG() { return G; }
+    @Override
+    public float GetH() { return H; }
 
     //G = 1 because the cost of moving from 1 cell to another should be constant cost,
     float G = 0; //G is our Distance to this node/our cost to move cells
     float H = 0; //H is our distance to the end, this is basically Cardinal Manhattan Distance
-    float F = G + H;
+    float F(){ return  G+H; }
 
     @Override
     public void UpdateHeuristic(CellPosition EndGoal, float G)
@@ -326,16 +316,18 @@ public class MazeCell implements AStNode {
     }
 
     @Override
-    public void UpdateHeuristic(int X, int Y, float G)
-    {
-        UpdateHeuristic(new CellPosition(X, Y), G);
-    }
+    public boolean GetValid() { return false; }
 
-
-    AStNode ParentNode;
+    AStNode ParentNode = null;
     @Override
     public void UpdateParent(AStNode P) {
         ParentNode = P;
     }
+
+    @Override
+    public boolean HasParent(){return ParentNode != null; }
+
+    @Override
+    public AStNode GetParent(){ return ParentNode; }
     //endregion
 }

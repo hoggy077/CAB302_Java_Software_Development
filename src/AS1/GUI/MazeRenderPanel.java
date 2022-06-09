@@ -1,5 +1,7 @@
 package AS1.GUI;
 
+import AS1.AStar.AStNode;
+import AS1.Maze.CellPosition;
 import AS1.Maze.Maze;
 import AS1.Maze.MazeCell;
 
@@ -12,6 +14,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -37,38 +40,76 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     int CellWidth = 45;
     int CellHeight = 45;
 
+    public MazeRenderPanel(Maze shared){ sharedMaze = shared;  }
+
+    public MazeRenderPanel(Dimension ParentSize, Maze shared){
+        sharedMaze = shared;
+        WindowUpdate(ParentSize.width, ParentSize.height);
+    }
+
     public void WindowUpdate(int XSize, int YSize){
         XSize -= WallWidth * 2;
         YSize -= WallWidth * 2;
         CellWidth = (XSize / sharedMaze.Width) - WallWidth * 2;
         CellHeight = (YSize / sharedMaze.Height) - WallWidth * 2;
 
+        if(sharedMaze.Height >= 50 || sharedMaze.Width >= 50)
+            WallWidth = 2;
+
+
         TotalCellWidth = CellWidth + WallWidth * 2;
         TotalCellHeight = CellHeight + WallWidth * 2;
 
-        RenderGrid(sharedMaze);
+        RenderGrid();
     }
 
 
 
     Maze sharedMaze;
 
+    boolean HasSolution = false;
+    AStNode StartN, EndPath;
+    public void RenderSolution(AStNode StartNode, AStNode Path){
+        HasSolution = true;
+        StartN = StartNode;
+        EndPath = Path;
+
+        AStNode Current = Path;
+        int Cell_xs, Cell_ys;
+
+        RenderingGraphics.setColor(new Color(138, 201, 38));
+        while (Current.comparePosTo(StartNode) != 1){
+
+            CellPosition pos = Current.GetPosition();
+            Cell_xs = (int) (((WallWidth *2) * (pos.X+1)) + (CellWidth * pos.X));
+            Cell_ys = (int) (((WallWidth *2) * (pos.Y+1)) + (CellHeight * pos.Y));
+
+            RenderingGraphics.fillRect(Cell_xs, Cell_ys, CellWidth, CellHeight);
+
+            Current = Current.GetParent();
+        }
+
+        CellPosition pos = Current.GetPosition();
+        Cell_xs = (int) (((WallWidth *2) * (pos.X+1)) + (CellWidth * pos.X));
+        Cell_ys = (int) (((WallWidth *2) * (pos.Y+1)) + (CellHeight * pos.Y));
+
+        RenderingGraphics.fillRect(Cell_xs, Cell_ys, CellWidth, CellHeight);
+
+        RenderingGraphics.setColor(Color.WHITE);
+        repaint();
+    }
+
     //literally just renders the maze
-    public void RenderGrid(Maze Target){
-
-        System.out.println("TH: %s TW: %s".formatted(TotalCellHeight,TotalCellWidth));
-
-        sharedMaze = Target;
-
-        int NewBufferH = TotalCellHeight * Target.Height, NewBufferW = TotalCellWidth * Target.Width;
+    public void RenderGrid(){
+        int NewBufferH = TotalCellHeight * sharedMaze.Height, NewBufferW = TotalCellWidth * sharedMaze.Width;
         BufferedImage BImg2 = new BufferedImage(NewBufferW,NewBufferH,BufferedImage.TYPE_INT_ARGB);
 
         BImg = BImg2;
         RenderingGraphics = BImg.createGraphics();
 
 
-        for(int y = 0; y < Target.Height; y++){
-            for(int x = 0; x < Target.Width; x++){
+        for(int y = 0; y < sharedMaze.Height; y++){
+            for(int x = 0; x < sharedMaze.Width; x++){
                 int Cell_xs, Cell_ys;
                 Cell_xs = ((WallWidth *2) * (x+1)) + (CellWidth * x);
                 Cell_ys = ((WallWidth *2) * (y+1)) + (CellHeight * y);
@@ -76,13 +117,16 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 RenderingGraphics.fillRect(Cell_xs, Cell_ys, CellWidth, CellHeight);//Render the cell center
 
                 for (MazeCell.CellWall wall : MazeCell.CellWall.values()){
-                    if (!Target.MazeMap[y][x].CheckWall(wall)) //false
-                        UpdateCellWall(Target.MazeMap[y][x], wall);
+                    if (!sharedMaze.MazeMap[y][x].CheckWall(wall)) //false
+                        UpdateCellWall(sharedMaze.MazeMap[y][x], wall);
                 }
-
-                repaint();
             }
         }
+
+        if(HasSolution)
+            RenderSolution(StartN, EndPath);
+
+        repaint();
     }
 
     //literally just adds the wall render in
@@ -122,6 +166,9 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
     //literally just saves the buffer to an image file
     public void SaveBuffer2File(String CompletePath){
+        HasSolution = false;
+        RenderGrid();
+
         try {
             File output = new File(CompletePath);
             ImageIO.write(BImg, "png", output);
@@ -161,8 +208,13 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 break;
 
             case 2:
-                //sharedMaze.FindSolution();
-                //String response = sharedMaze.GetCellString();
+                System.out.println("mhm");
+                AStNode solution = sharedMaze.FindSolution();
+                if(solution == null){
+                    System.out.println("Solution not found");
+                    break;
+                }
+                RenderSolution(sharedMaze.MazeMap[0][0], solution);
                 break;
 
             case 3:
@@ -201,23 +253,29 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                     //System.out.println(String.format("Button:%s\nPosition: %sx %sy", e.getButton(), Currentx - LastCell.x, Currenty - LastCell.y));
                     Point Dir = new Point(Currentx - LastCell.x, Currenty - LastCell.y);
 
+                    boolean IsValid = sharedMaze.Inbounds(Currentx, Currenty);
+                    if (!IsValid)
+                        return;
+
                     MazeCell.CellWall tmpcw = MazeCell.Point2Wall(Dir);
                     if(tmpcw == null)
                         return;
 
                     switch (CurrentBtn){
                         case 1:
+                            HasSolution = false;
                             sharedMaze.MazeMap[LastCell.y][LastCell.x].RemoveWall(tmpcw);
                             break;
 
                         case 3:
+                            HasSolution = false;
                             sharedMaze.MazeMap[LastCell.y][LastCell.x].AddWall(tmpcw);
                             break;
                     }
 
                     LastCell = new Point(Currentx, Currenty);
 
-                    RenderGrid(sharedMaze);
+                    RenderGrid();
                 } else {
                     isDragging = false;
                     return;

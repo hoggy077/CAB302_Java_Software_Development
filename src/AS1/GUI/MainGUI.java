@@ -23,7 +23,7 @@ public class MainGUI {
             @Override
             public void componentResized(ComponentEvent e) {
                 MazeRPanel.WindowUpdate(MazeFrame.getContentPane().getWidth(), MazeFrame.getContentPane().getHeight());
-                MazeRPanel.RenderGrid(Target);
+                MazeRPanel.RenderGrid();
             }
 
             @Override
@@ -47,7 +47,7 @@ public class MainGUI {
         GridBagConstraints gbc = new GridBagConstraints();
 
 
-        MazeRenderPanel MazePanel = new MazeRenderPanel();
+        MazeRenderPanel MazePanel = new MazeRenderPanel(MazeFrame.getMinimumSize(), Reference);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = 1;
@@ -72,7 +72,7 @@ public class MainGUI {
         //MazeRPanel.setPreferredSize(d);
         MazeRPanel.setPreferredSize(new Dimension(MazeFrame.getContentPane().getWidth(),MazeFrame.getContentPane().getHeight()));
         MazeFrame.pack();
-        MazeRPanel.RenderGrid(Target);
+        MazeRPanel.RenderGrid();
     }
 
 

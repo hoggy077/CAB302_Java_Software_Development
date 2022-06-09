@@ -104,7 +104,13 @@ public class Maze {
 
     //endregion
 
-    //region Solver
+    //region Utility
+    public boolean Inbounds(int x, int y){
+        return x >= 0 && x < Width && y >= 0 && y < Height;
+    }
+    //endregion
+
+    //region Solving
     public AStNode FindSolution() {
         return AstarSolver.FindPath(MazeMap[0][0], MazeMap[Height-1][Width-1]);
     }

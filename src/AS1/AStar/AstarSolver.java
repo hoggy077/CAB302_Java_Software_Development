@@ -7,24 +7,23 @@ import java.util.Dictionary;
 
 public class AstarSolver {
 
+    static ArrayList<AStNode> OpenHeap = new ArrayList<>();
+    static ArrayList<AStNode> ClosedHeap = new ArrayList<>();
+
     public static AStNode FindPath(AStNode start, AStNode End){
-        ArrayList<AStNode> OpenHeap = new ArrayList<>();
-        ArrayList<AStNode> ClosedHeap = new ArrayList<>();
+        OpenHeap.clear();
+        ClosedHeap.clear();
 
         OpenHeap.add(start);
 
         while(OpenHeap.size() > 0)
         {
-            OpenHeap.sort(new Comparator<AStNode>() {
-                @Override
-                public int compare(AStNode o1, AStNode o2) {
-                    return  o1.compareFTo(o2);
-                }
-            });
+            OpenHeap.sort((o1, o2) -> o1.compareTo(o2));
             AStNode Current = OpenHeap.get(0);
             OpenHeap.remove(0);
             ClosedHeap.add(Current);
 
+            System.out.println("Cell: %s %s".formatted(Current.GetPosition().X, Current.GetPosition().Y));
 
             if(Current.comparePosTo(End) == 1)
                 return Current;
