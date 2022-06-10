@@ -93,28 +93,10 @@ public class Menu {
         MfromScratch.add(saveMazeDB);
 
         //Gui for drawing a maze automatically, will do properly at a later point
-        JPanel MAutoGen = new JPanel();
+
         JButton autogenbut = new JButton("Generate a Maze!");
-        MAutoGen.add(autogenbut);
-        MAutoGen.add(new JLabel("Please Enter Height"));
-        MAutoGen.add(new JTextField(2));
-        MAutoGen.add(new JLabel("Please Enter Width"));
-        MAutoGen.add(new JTextField(2));
+        MfromScratch.add(autogenbut);
 
-        JButton AutoPath = new JButton("Check Maze Path");
-        MAutoGen.add(AutoPath);
-
-        MAutoGen.add(new JTextField("Maze Name"));
-        MAutoGen.add(new JTextField("Author Name"));
-
-        JRadioButton agLogo = new JRadioButton("Auto place logo");
-        MAutoGen.add(agLogo);
-
-        JButton gplaceLogo = new JButton("Place Image");
-        MAutoGen.add(gplaceLogo);
-
-        JButton gsaveMaze = new JButton("Save Maze To File");
-        MAutoGen.add(gsaveMaze);
         //endregion
 
         //region Listener Event stuff
@@ -136,21 +118,6 @@ public class Menu {
 
                     //--do something about the exception, or ignore them.
                 }
-            }
-        };
-        ActionListener generatebutton = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-
-                //calls method from dummy classes to auto generate
-
-            }
-        };
-        ActionListener checkbutton = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
             }
         };
         ActionListener savebutton = new ActionListener() {
@@ -188,12 +155,6 @@ public class Menu {
                MazeGUI.SetGroupImg(path);
             }
         };
-        ActionListener autoplace = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //calls method from dummy classes to auto place image
-            }
-        };
         ActionListener databaseSave = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -214,6 +175,17 @@ public class Menu {
                 }
             }
         };
+        ActionListener autoGen = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MazeGUI.RandomGen();
+
+            }
+        };
+
+        autogenbut.addActionListener(autoGen);
+
+
 
         //endregion
 
@@ -221,15 +193,11 @@ public class Menu {
         Draw.addActionListener(drawbutton);
         HeightField.addActionListener(drawbutton);
         Path.addActionListener(generatepath);
-        aLogo.addActionListener(autoplace);
+
         placeLogo.addActionListener(placeimage);
         saveMaze.addActionListener(savebutton);
-        autogenbut.addActionListener(generatebutton);
-        AutoPath.addActionListener(generatepath);
-        agLogo.addActionListener(autoplace);
-        gplaceLogo.addActionListener(placeimage);
-        gplaceLogo.addActionListener(placeimage);
-        gsaveMaze.addActionListener(savebutton);
+
+
         saveMazeDB.addActionListener(databaseSave);
         //endregion
         //endregion
@@ -337,7 +305,6 @@ public class Menu {
 
         exporttofile.addActionListener(importDb);
         pane.add("Draw a Maze from Scratch",MfromScratch);
-        pane.add("Generate a Maze", MAutoGen);
         pane.add("Maze List", MazeBrowser);
 
         GuiFrame.getContentPane().add(pane);
