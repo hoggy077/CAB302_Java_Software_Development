@@ -53,11 +53,13 @@ public class Database {
     public static final String CREATE_TABLE =
             "CREATE TABLE IF NOT EXISTS maze ("
                     + "id INTEGER PRIMARY KEY /*!40101 AUTO_INCREMENT */ NOT NULL UNIQUE,"
-                    + "authorName VARCHAR(30),"
-                    + "mazeName VARCHAR(20),"
+                    + "authorName VARCHAR(255),"
+                    + "mazeName VARCHAR(255),"
                     + "dateCreated DATE,"
                     + "dateEdited DATE,"
-                    + "image VARBINARY)";
+                    + "mazeImage VARBINARY,"
+                    + "mazeByteString MEDIUMTEXT,"
+                    + "Difficulty VARCHAR(255))";
 
     public void createTable() throws SQLException {
         Connection connection = Database.getInstance();
