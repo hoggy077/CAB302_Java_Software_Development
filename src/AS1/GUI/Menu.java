@@ -136,6 +136,9 @@ public class Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //calls method from dummy classes to check path
+                if(MazeGUI == null) //--with the changes I made, this needs to be checked to avoid a "you pressed the button but there was no maze yet!"
+                    return;
+
                 if (MazeGUI.RequestSolution(true) == null){
                     JOptionPane.showMessageDialog(null, "No solution found, please try again");
 
@@ -148,6 +151,9 @@ public class Menu {
         ActionListener placeimage = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                if(MazeGUI == null) //--with the changes I made, this needs to be checked to avoid a "you pressed the button but there was no maze yet!"
+                    return;
                 //calls method to get file path as a string
                 
                String path = getFilepathString();
@@ -158,6 +164,8 @@ public class Menu {
         ActionListener databaseSave = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(MazeGUI == null) //--with the changes I made, this needs to be checked to avoid a "you pressed the button but there was no maze yet!"
+                    return;
                 String name = mazeName.getText();
                 String author = mazeAuthor.getText();
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -178,6 +186,8 @@ public class Menu {
         ActionListener autoGen = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(MazeGUI == null) //--with the changes I made, this needs to be checked to avoid a "you pressed the button but there was no maze yet!"
+                    return;
                 MazeGUI.RandomGen();
 
             }
@@ -234,6 +244,7 @@ public class Menu {
         ActionListener importDb = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 Connection connection = null;
                 ResultSet rs = null;
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -316,18 +327,27 @@ public class Menu {
 
     public String requestDifficulty(){
         int solution = MazeGUI.RequestSolutionCount();
+        System.out.println(solution);
+        System.out.println(hsp);
+        System.out.println(wsp);
         int dimension = hsp * wsp;
+        System.out.println(dimension);
         String difficulty = "Please get solution for difficulty";
-        int asd = solution / dimension;
+        float asd = (float)solution / dimension;
+        System.out.println(asd);
+
 
 
         if (asd >= 0.75){
             difficulty = "Hard";
-        } else if (asd < .75 && asd >= .5 ) {
+        }
+        if (asd < .75 && asd >= .5 ) {
             difficulty = "Medium";
-        } else if (asd < .5 && asd >=.35) {
+        }
+        if (asd < .5 && asd >=.35) {
             difficulty = "Easy";
-        } else if (asd < .35) {
+        }
+        if (asd < .35) {
             difficulty = "Beginner";
 
         }
