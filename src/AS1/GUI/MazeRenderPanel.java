@@ -275,8 +275,10 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                     int TargetX = (int) Math.floor(e.getX() / TotalCellWidth);
                     int TargetY = (int) Math.floor(e.getY() / TotalCellHeight);
                     try{
-                        if(sharedMaze.MazeMap[TargetY][TargetX].InGroup())
+                        if(sharedMaze.MazeMap[TargetY][TargetX].InGroup()) {
                             sharedMaze.MazeMap[TargetY][TargetX].GetGroup().SetImage(ImgPath);
+                            RenderGrid();
+                        }
                         else
                             JOptionPane.showMessageDialog(null, "Targeted cell is not in a group. Image placement canceled");
                     }

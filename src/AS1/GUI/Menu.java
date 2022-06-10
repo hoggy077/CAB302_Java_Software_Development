@@ -4,8 +4,11 @@ package AS1.GUI;
 import AS1.Database.Database;
 import AS1.Database.DatabaseCalls;
 import AS1.Maze.Maze;
+import com.sun.jdi.InvalidTypeException;
+import jdk.jshell.execution.Util;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -336,6 +339,26 @@ public class Menu {
     //opens up window to select a file, returns the path as a string
     public String getFilepathString(){
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                switch (GetExtension(f.getName()))
+                {
+                    case ".png":
+                    case ".jpg":
+                    case ".jpeg":
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return "All JPEG,JPG,PNG Files";
+            }
+        });
         int response = fileChooser.showOpenDialog(null); //selects file to open
         String Path = "";
 
@@ -349,5 +372,8 @@ public class Menu {
     }
 
 
-
+    static String GetExtension(String CompleteName){
+        String[] r = CompleteName.split("\\.");
+        return ".".concat(r[r.length-1]).toLowerCase();
+    }
 }

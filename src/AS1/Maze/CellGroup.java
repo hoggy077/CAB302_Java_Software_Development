@@ -46,11 +46,7 @@ public class CellGroup
         switch (GetExtension(f.getName()))
         {
             case ".png":
-                break;
-
             case ".jpg":
-                break;
-
             case ".jpeg":
                 break;
 
@@ -69,7 +65,7 @@ public class CellGroup
     public BufferedImage GetImage(){ return GroupsImage; }
 
     static String GetExtension(String CompleteName){
-        String[] r = CompleteName.split(".");
+        String[] r = CompleteName.split("\\.");
         return ".".concat(r[r.length-1]).toLowerCase();
     }
 }
