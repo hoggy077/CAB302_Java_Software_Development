@@ -205,10 +205,10 @@ public class Menu {
                 String difficulty = requestDifficulty();
                 String bits = MazeGUI.RequestMazeCellString();
 
-                final String INSERT_NAME = "INSERT INTO maze(authorName, mazeName, dateCreated, dateEdited, mazeByteString, Difficulty) VALUES (?, ?, ?, ?);";
+                final String INSERT_NAME = "INSERT INTO maze(authorName, mazeName, dateCreated, dateEdited, mazeByteString, Difficulty, mazeHeight, mazeWidth) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
                 try {
-                    DatabaseCalls.Insert(name, author, datecreate, datemod, bits, difficulty);
+                    DatabaseCalls.Insert(name, author, datecreate, datemod, bits, difficulty, hsp, wsp);
                 }catch (IllegalArgumentException illegalArgumentException){
                     JOptionPane.showMessageDialog(null, "Please input the correct info into the relevant field");
                 }
@@ -237,7 +237,7 @@ public class Menu {
         //Gui for maze browser
 
         //table names
-        String[] columnNames = {"Maze Name", "Author", "Date Created", "Date Edited"};
+        String[] columnNames = {"Author", "Maze Name", "Date Created", "Date Edited", "Difficulty", "Mazebits", "Maze Height", "Maze Width"};
 
         //temp set of objects for table
 
@@ -251,20 +251,28 @@ public class Menu {
 
 
         JMenuBar mb = new JMenuBar();
-        JMenu eo = new JMenu("Maze Export Options");
-        JMenuItem exporttofile = new JMenuItem("Import Database");
+        JMenu eo = new JMenu("Options");
+        JMenuItem exporttofile = new JMenuItem("Import / Refresh Database");
+        JMenuItem OpenMaze = new JMenuItem("Open Selected Maze");
+        eo.add(OpenMaze);
         eo.add(exporttofile);
         mb.add(eo);
         MazeBrowser.add(mb, BorderLayout.SOUTH);
         JTable table = new JTable(new DefaultTableModel(columnNames, 0));
+        table.getColumnModel().getColumn(5).setPreferredWidth(0);
+        table.getColumnModel().getColumn(6).setPreferredWidth(0);
+        table.getColumnModel().getColumn(7).setPreferredWidth(0);
+
         ActionListener importDb = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Connection connection = null;
                 ResultSet rs = null;
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                model.setRowCount(0);
                 try {
                     connection = Database.getInstance();
-                    PreparedStatement st = connection.prepareStatement("SELECT authorName, mazeName, dateCreated, dateEdited FROM maze");
+                    PreparedStatement st = connection.prepareStatement("SELECT id, authorName, mazeName, dateCreated, dateEdited, mazeByteString, Difficulty, mazeHeight, mazeWidth FROM maze");
                     rs = st.executeQuery();
 
 
@@ -272,25 +280,24 @@ public class Menu {
                     while(rs.next()){
 
                         //assigning the column info to strings
+
                         String authorName = rs.getString("authorName");
                         String mazeName = rs.getString("mazeName");
                         String dateCreated = rs.getString("dateCreated");
                         String dateEdited = rs.getString("dateEdited");
+                        String Difficulty = rs.getString("Difficulty");
+                        String mazeByteString = rs.getString("mazeByteString");
+                        String mazeHeight = rs.getString("mazeHeight");
+                        String mazeWidth = rs.getString("mazeWidth");
 
-
-                        Object[] mazelists = {authorName, mazeName, dateCreated, dateEdited};
-
-
-                        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-
+                        Object[] mazelists = {authorName, mazeName, dateCreated, dateEdited, Difficulty, mazeByteString, mazeHeight, mazeWidth};
                         model.addRow(mazelists);
 
 
                     }
 
 
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    //DefaultTableModel model = (DefaultTableModel) table.getModel();
                     model.addRow(new Object[]{mazeName, mazeAuthor});
 
                 } catch (SQLException ex) {
@@ -299,6 +306,29 @@ public class Menu {
 
             }
         };
+        ActionListener openFromList = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //get maze details
+                int row = table.getSelectedRow();
+                String bytes = table.getModel().getValueAt(row, 5).toString();
+                String height = table.getModel().getValueAt(row, 6).toString();
+                String width = table.getModel().getValueAt(row, 7).toString();
+
+                int Iheight = Integer.parseInt(height);
+                int Iwidth = Integer.parseInt(width);
+
+
+                MazeGUI = new MainGUI(new Maze(Iheight, Iwidth, bytes));
+                hsp = Iheight;
+                wsp = Iwidth;
+
+                //open maze up in program using details
+
+
+            }
+        };
+        OpenMaze.addActionListener(openFromList);
 
 
         MazeBrowser.add(table, BorderLayout.CENTER);
@@ -322,6 +352,8 @@ public class Menu {
         int dimension = hsp * wsp;
         String difficulty = "Please get solution for difficulty";
         int asd = solution / dimension;
+
+
         if (asd >= 0.75){
             difficulty = "Hard";
         } else if (asd < .75 && asd >= .5 ) {
