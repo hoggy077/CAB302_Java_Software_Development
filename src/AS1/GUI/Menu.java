@@ -57,7 +57,7 @@ public class Menu {
         MfromScratch.add(WidthField);
 
         //Maze check path button for scratch tab
-        JButton Path = new JButton("Check Maze Path");
+        JButton Path = new JButton("Solve Maze");
         MfromScratch.add(Path);
 
 
@@ -164,6 +164,13 @@ public class Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //calls method from dummy classes to check path
+                if (MazeGUI.RequestSolution(true) == null){
+                    JOptionPane.showMessageDialog(null, "No solution found, please try again");
+
+                }else{
+                    MazeGUI.RequestSolutionCount();
+                }
+
             }
         };
         ActionListener placeimage = new ActionListener() {
@@ -186,11 +193,13 @@ public class Menu {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 LocalDateTime datecreate = LocalDateTime.now();
                 LocalDateTime datemod = LocalDateTime.now();
+                String difficulty = requestDifficulty();
+                String bits = MazeGUI.RequestMazeCellString();
 
-                final String INSERT_NAME = "INSERT INTO maze(authorName, mazeName, dateCreated, dateEdited) VALUES (?, ?, ?, ?);";
+                final String INSERT_NAME = "INSERT INTO maze(authorName, mazeName, dateCreated, dateEdited, mazeByteString, Difficulty) VALUES (?, ?, ?, ?);";
 
                 try {
-                    DatabaseCalls.Insert(name, author, datecreate, datemod);
+                    DatabaseCalls.Insert(name, author, datecreate, datemod, bits, difficulty);
                 }catch (IllegalArgumentException illegalArgumentException){
                     JOptionPane.showMessageDialog(null, "Please input the correct info into the relevant field");
                 }
@@ -298,4 +307,26 @@ public class Menu {
 
         GuiFrame.setVisible(true);
     }
+
+    public String requestDifficulty(){
+        int solution = MazeGUI.RequestSolutionCount();
+        int dimension = hsp * wsp;
+        String difficulty = "Please get solution for difficulty";
+        int asd = solution / dimension;
+        if (asd >= 0.75){
+            difficulty = "Hard";
+        } else if (asd < .75 && asd >= .5 ) {
+            difficulty = "Medium";
+        } else if (asd < .5 && asd >=.35) {
+            difficulty = "Easy";
+        } else if (asd < .35) {
+            difficulty = "Beginner";
+
+        }
+        return difficulty;
+
+    }
+
+
+
 }
