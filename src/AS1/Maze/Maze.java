@@ -2,8 +2,12 @@ package AS1.Maze;
 
 import AS1.AStar.AStNode;
 import AS1.AStar.AstarSolver;
+import AS1.GUI.MazeRenderPanel;
 
+import java.awt.*;
+import java.lang.annotation.Target;
 import java.util.*;
+import java.util.List;
 
 public class Maze {
     //region General Maze
@@ -77,29 +81,52 @@ public class Maze {
 
     //region Maze generation
     //Based on Randomized Prim's algorithm
-    /*public void GeneratedMaze(){
-
+    List<MazeCell> OpenHeap = new ArrayList<MazeCell>();
+    List<MazeCell> ClosedHeap = new ArrayList<MazeCell>();
+    public void GeneratedMaze(){
         Random rnd = new Random();
-        int OriginX = rnd.nextInt(0,Width), OriginY = rnd.nextInt(0, Height);
+        int OriginX = rnd.nextInt(Width), OriginY = rnd.nextInt( Height);
 
-
-        List<MazeCell> OpenHeap = new ArrayList<MazeCell>();
-        List<MazeCell> ClosedHeap = new ArrayList<MazeCell>();
-
-        ClosedHeap.add(MazeMap[OriginY][OriginX]);
-        OpenHeap.addAll((Collection<? extends MazeCell>) MazeMap[OriginY][OriginX].NeighborsNodes());
-
-        while(OpenHeap.size() > 0){
-            int CellNum = rnd.nextInt(0, OpenHeap.size());
-            MazeCell cell = OpenHeap.get(CellNum);
-
-            //neighbors that are active
-            ArrayList<MazeCell> neighborsOfRandom = new ArrayList<>();
-            neighborsOfRandom.addAll((Collection<? extends MazeCell>) cell.NeighborsNodes());
-
-
+        for (int y = 0; y < Height; y++){
+            for (int x = 0; x < Width; x++){
+                MazeMap[y][x].ResetCell();
+            }
         }
-    }*/
+
+
+        ArrayList<MazeCell> Visited = new ArrayList<>();
+        ArrayDeque<MazeCell> HistoryStack = new ArrayDeque<>();
+        HistoryStack.push(MazeMap[0][0]);
+        Visited.add(MazeMap[0][0]);
+
+        MazeCell target = HistoryStack.getFirst();
+        while (HistoryStack.size() > 0){
+            boolean UnUsedWall = false;
+            ArrayList<MazeCell> relevantNeighbors = new ArrayList<>();
+            for (AStNode asn:target.NeighborsNodes(false)) {
+                MazeCell m = (MazeCell) asn;
+                if (!Visited.contains(m)) {
+                    relevantNeighbors.add(m);
+                    UnUsedWall = true;
+                }
+            }
+
+            if (!UnUsedWall) {
+                target = HistoryStack.pop();
+                continue;
+            }
+            else
+            {
+                MazeCell RandomNeigh = relevantNeighbors.get(rnd.nextInt(relevantNeighbors.size()));
+                CellPosition direction = RandomNeigh.GetPosition().Difference(target.GetPosition());
+                target.RemoveWall(MazeCell.Point2Wall(new Point((int)direction.X,(int)direction.Y)));
+
+                Visited.add(RandomNeigh);
+                HistoryStack.push(RandomNeigh);
+                target = RandomNeigh;
+            }
+        }
+    }
     //endregion
 
     //endregion

@@ -92,4 +92,6 @@ public class MainGUI {
     public int RequestSolutionCount(){ return MazeRPanel.GetMinimumSolution(); }
 
     public void SetGroupImg(String path){ MazeRPanel.SetGroupImg(path); }
+
+    public void RandomGen(){ MazeRPanel.AutoGenWrap(); }
 }

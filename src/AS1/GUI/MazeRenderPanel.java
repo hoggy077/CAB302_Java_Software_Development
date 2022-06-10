@@ -106,11 +106,31 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
     //literally just renders the maze
     public void RenderGrid(){
-        int NewBufferH = TotalCellHeight * sharedMaze.Height, NewBufferW = TotalCellWidth * sharedMaze.Width;
+        int NewBufferH = TotalCellHeight * sharedMaze.Height + WallWidth * 2, NewBufferW = TotalCellWidth * sharedMaze.Width + WallWidth * 2;
         BufferedImage BImg2 = new BufferedImage(NewBufferW,NewBufferH,BufferedImage.TYPE_INT_ARGB);
 
         BImg = BImg2;
         RenderingGraphics = BImg.createGraphics();
+
+        //Render entry and exist arrows
+        Polygon EntryArrow = new Polygon();
+        EntryArrow.addPoint(WallWidth * 2, 0);
+        EntryArrow.addPoint(WallWidth * 2 + CellWidth, 0);
+        EntryArrow.addPoint((WallWidth * 2 + CellWidth/2), WallWidth * 2);
+
+        int F_Cell_x = ((WallWidth *2) * (sharedMaze.Width)) + (CellWidth * (sharedMaze.Width-1));
+        int F_Cell_y = ((WallWidth *2) * (sharedMaze.Height)) + (CellHeight * (sharedMaze.Width-1));
+
+        Polygon ExitArrow = new Polygon();
+        ExitArrow.addPoint(F_Cell_x, F_Cell_y + CellHeight + WallWidth * 2);
+        ExitArrow.addPoint(F_Cell_x + CellWidth/2, F_Cell_y + CellHeight);
+        ExitArrow.addPoint(F_Cell_x + CellWidth, F_Cell_y + CellHeight + WallWidth * 2);
+
+        RenderingGraphics.setColor(new Color(138, 201, 38));
+        RenderingGraphics.fillPolygon(EntryArrow);
+        RenderingGraphics.setColor(new Color(208, 50, 38));
+        RenderingGraphics.fillPolygon(ExitArrow);
+        RenderingGraphics.setColor(Color.WHITE);
 
         //region Render Grid + removed Walls
         ArrayList<CellGroup> PresentGroups = new ArrayList<>();
@@ -132,6 +152,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
             }
         }
         //endregion
+
+
 
         //Render groups. Groups are not carried into the Byte strings so these need to be redone on load
         //this is where we need to stick shit for rendering the group image
@@ -231,6 +253,13 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         } catch (IOException e) {
             e.printStackTrace();//--we need to replace this with an exception throw
         }
+    }
+
+    public void AutoGenWrap()
+    {
+        HasSolution = false;
+        sharedMaze.GeneratedMaze();
+        RenderGrid();
     }
     //endregion
 
