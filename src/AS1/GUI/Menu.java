@@ -10,6 +10,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,7 +78,7 @@ public class Menu {
         MfromScratch.add(aLogo);
 
         //Place logo button for scratch tab
-        JButton placeLogo = new JButton("Place Image");
+        JButton placeLogo = new JButton("Place an Image");
         MfromScratch.add(placeLogo);
 
         //Save maze to png button for scratch tab
@@ -176,7 +178,10 @@ public class Menu {
         ActionListener placeimage = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //calls method from dummy classes to place image
+                //calls method to get file path as a string
+                
+               String path = getFilepathString();
+               System.out.println(path);
             }
         };
         ActionListener autoplace = new ActionListener() {
@@ -325,6 +330,21 @@ public class Menu {
         }
         return difficulty;
 
+    }
+
+    //opens up window to select a file, returns the path as a string
+    public String getFilepathString(){
+        JFileChooser fileChooser = new JFileChooser();
+        int response = fileChooser.showOpenDialog(null); //selects file to open
+        String Path = "";
+
+        if (response == JFileChooser.APPROVE_OPTION){
+            File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+
+            Path = file.toString();
+
+        }
+        return Path;
     }
 
 
