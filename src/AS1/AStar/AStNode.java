@@ -1,10 +1,12 @@
 package AS1.AStar;
 
+import AS1.Maze.CellGroup;
 import AS1.Maze.CellPosition;
 import java.util.ArrayList;
 
 public interface AStNode {
     ArrayList<AStNode> NeighborsNodes(boolean IsAccessible);    //IsAccessible means to only get neighbors without walls between
+    ArrayList<AStNode> NeighborsNodes(boolean IsAccessible, ArrayList<AStNode> Evaluated);    //IsAccessible means to only get neighbors without walls between
 
     float GetF();//Distance traveled + Distance from target
     float GetG();//Distance traveled

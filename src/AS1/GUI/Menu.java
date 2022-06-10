@@ -182,6 +182,7 @@ public class Menu {
                 
                String path = getFilepathString();
                System.out.println(path);
+               MazeGUI.SetGroupImg(path);
             }
         };
         ActionListener autoplace = new ActionListener() {

@@ -21,12 +21,12 @@ public class TestDatabaseCalls {
 //Do not run it will update the main db
     @Test
     public void Insertdatabase(){
-        dbc.Insert("name", "persons", datecreate, datemod);
+        //dbc.Insert("name", "persons", datecreate, datemod);
 
     }
     @Test
     public void asd(){
-        dbc.Insert("name", "persons", datecreate, datemod);
+        //dbc.Insert("name", "persons", datecreate, datemod);
     }
 
 }

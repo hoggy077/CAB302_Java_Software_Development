@@ -1,6 +1,7 @@
 package AS1.GUI;
 
 import AS1.AStar.AStNode;
+import AS1.Maze.CellGroup;
 import AS1.Maze.CellPosition;
 import AS1.Maze.Maze;
 import AS1.Maze.MazeCell;
@@ -12,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,7 +112,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         BImg = BImg2;
         RenderingGraphics = BImg.createGraphics();
 
-
+        //region Render Grid + removed Walls
+        ArrayList<CellGroup> PresentGroups = new ArrayList<>();
         for(int y = 0; y < sharedMaze.Height; y++){
             for(int x = 0; x < sharedMaze.Width; x++){
                 int Cell_xs, Cell_ys;
@@ -123,9 +126,59 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                     if (!sharedMaze.MazeMap[y][x].CheckWall(wall)) //false
                         UpdateCellWall(sharedMaze.MazeMap[y][x], wall);
                 }
+
+                if(sharedMaze.MazeMap[y][x].InGroup() && !PresentGroups.contains(sharedMaze.MazeMap[y][x].GetGroup()))
+                    PresentGroups.add(sharedMaze.MazeMap[y][x].GetGroup());
+            }
+        }
+        //endregion
+
+        //Render groups. Groups are not carried into the Byte strings so these need to be redone on load
+        //this is where we need to stick shit for rendering the group image
+        for (CellGroup cg:PresentGroups) {
+            MazeCell UpperLeft = null;
+            MazeCell LowerRight = null;
+
+            ArrayList<MazeCell> cells = cg.GetCells();
+            for (int index = 0; index < cells.size(); index++)
+            {
+                if(index == 0){
+                    UpperLeft = cells.get(0);
+                    LowerRight = cells.get(0);
+                    continue;
+                }
+
+                CellPosition currentPos = cells.get(index).GetPosition();
+                if(currentPos.X < UpperLeft.GetPosition().X || currentPos.Y < UpperLeft.GetPosition().Y){
+                    UpperLeft = cells.get(index);
+                    continue;
+                }
+                else if (currentPos.X > LowerRight.GetPosition().X || currentPos.Y > LowerRight.GetPosition().Y){
+                    LowerRight = cells.get(index);
+                    continue;
+                }
+            }
+
+
+            int Cell_xs, Cell_ys,Cell_xe, Cell_ye;
+            CellPosition UL = UpperLeft.GetPosition();
+            CellPosition LR = LowerRight.GetPosition();
+            Cell_xs = (int) (((WallWidth *2) * (UL.X+1)) + (CellWidth * UL.X));
+            Cell_ys = (int) (((WallWidth *2) * (UL.Y+1)) + (CellHeight * UL.Y));
+
+            Cell_xe = (int) (((WallWidth *2) * (LR.X+1)) + (CellWidth * LR.X)) + CellWidth;
+            Cell_ye = (int) (((WallWidth *2) * (LR.Y+1)) + (CellHeight * LR.Y)) + CellHeight;
+
+            RenderingGraphics.fillRect(Cell_xs, Cell_ys, Cell_xe - Cell_xs, Cell_ye - Cell_ys);
+
+            //then test if there is an image for the group and render it here
+            BufferedImage GroupImg = cg.GetImage();
+            if(GroupImg != null){
+                RenderingGraphics.drawImage(GroupImg, Cell_xs, Cell_ys, Cell_xe - Cell_xs, Cell_ye - Cell_ys, null);
             }
         }
 
+        //Render solution if its available. becomes false when the maze is edited
         if(HasSolution)
             RenderSolution(StartN, EndPath);
 
@@ -199,38 +252,115 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         //endregion
     }
 
+
+    boolean SettingGroupImg = false;
+    String ImgPath = "";
+    public void SetGroupImg(String Path){
+        ImgPath = Path;
+        SettingGroupImg = true;
+    }
+
+    boolean BuildingGroup = false;
+    int GroupStartX,GroupStartY,GroupEndX,GroupEndY;
     @Override
     public void mousePressed(MouseEvent e) {
 
         CurrentBtn = e.getButton();
+
+        //On mouse down for middle we're gonna change shit up a little
         switch (CurrentBtn)
         {
             case 1:
+                if (SettingGroupImg){
+                    int TargetX = (int) Math.floor(e.getX() / TotalCellWidth);
+                    int TargetY = (int) Math.floor(e.getY() / TotalCellHeight);
+                    try{
+                        if(sharedMaze.MazeMap[TargetY][TargetX].InGroup())
+                            sharedMaze.MazeMap[TargetY][TargetX].GetGroup().SetImage(ImgPath);
+                        else
+                            JOptionPane.showMessageDialog(null, "Targeted cell is not in a group. Image placement canceled");
+                    }
+                    catch(Exception Ex){
+                        JOptionPane.showMessageDialog(null, Ex.getMessage());
+                    }
+                    SettingGroupImg = false;
+                    ImgPath = "";
+                }
+                else {
+                    LastCell = new Point((int) Math.floor(e.getX()/TotalCellWidth),(int) Math.floor(e.getY()/TotalCellHeight));
+                    isDragging = true;
+                }
+                break;
+
+            case 3:
+                if (SettingGroupImg)
+                    SettingGroupImg = false;
                 LastCell = new Point((int) Math.floor(e.getX()/TotalCellWidth),(int) Math.floor(e.getY()/TotalCellHeight));
                 isDragging = true;
                 break;
 
             case 2:
-                System.out.println("mhm");
+                //region Solution render test
+                /*System.out.println("mhm");
                 AStNode solution = sharedMaze.FindSolution();
                 if(solution == null){
                     System.out.println("Solution not found");
                     break;
                 }
-                RenderSolution(sharedMaze.MazeMap[0][0], solution);
-                break;
-
-            case 3:
-                LastCell = new Point((int) Math.floor(e.getX()/TotalCellWidth),(int) Math.floor(e.getY()/TotalCellHeight));
-                isDragging = true;
+                RenderSolution(sharedMaze.MazeMap[0][0], solution);*/
+                //endregion
+                if (SettingGroupImg)
+                    SettingGroupImg = false;
+                BuildingGroup = true;
+                GroupStartX = (int) Math.floor(e.getX() / TotalCellWidth);
+                GroupStartY = (int) Math.floor(e.getY() / TotalCellHeight);
                 break;
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(CurrentBtn == 1 || CurrentBtn == 3)//Left mouse button & Right mouse button
+        if((CurrentBtn == 1 || CurrentBtn == 3) && isDragging)//Left mouse button & Right mouse button while drawing
             isDragging = false;
+
+        if(CurrentBtn == 2 && BuildingGroup){
+            BuildingGroup = false;
+            GroupEndX = (int) Math.floor(e.getX() / TotalCellWidth);
+            GroupEndY = (int) Math.floor(e.getY() / TotalCellHeight);
+
+            if(GroupEndX == GroupStartX && GroupEndY == GroupStartY)
+                if(sharedMaze.MazeMap[GroupStartY][GroupStartX].GetGroup() != null)
+                    sharedMaze.MazeMap[GroupStartY][GroupStartX].GetGroup().ClearGroup();
+                else
+                    return;
+
+            if(!sharedMaze.Inbounds(GroupEndX, GroupEndY))
+                return;
+
+            if (GroupEndX < GroupStartX){
+                int swap = GroupStartX;
+                GroupStartX = GroupEndX;
+                GroupEndX = swap;
+            }
+
+            if (GroupEndY < GroupStartY){
+                int swap = GroupStartY;
+                GroupStartY = GroupEndY;
+                GroupEndY = swap;
+            }
+
+            CellGroup group = new CellGroup();
+            for (int TargetY = GroupStartY; TargetY <= GroupEndY; TargetY++){
+                for (int TargetX = GroupStartX; TargetX <= GroupEndX; TargetX++){
+                    //for each cell in the group
+                    if(sharedMaze.MazeMap[TargetY][TargetX].InGroup())
+                        sharedMaze.MazeMap[TargetY][TargetX].GetGroup().ClearGroup();
+
+                    group.AddGroupCell(sharedMaze.MazeMap[TargetY][TargetX]);
+                }
+            }
+            RenderGrid();
+        }
     }
 
     @Override
@@ -264,10 +394,24 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                     if(tmpcw == null)
                         return;
 
+
+                    //Grouping now done using cell selection, drawing groups grants a ton of possible issues around rendering and processing if things go weird
+                    /*CellGroup NewGroup = sharedMaze.MazeMap[LastCell.y][LastCell.x].GetGroup();
+                    if(CurrentBtn == 2 && NewGroup == null){
+                        sharedMaze.MazeMap[LastCell.y][LastCell.x].SetGroup(new CellGroup());
+                        NewGroup = sharedMaze.MazeMap[LastCell.y][LastCell.x].GetGroup();
+                        NewGroup.AddGroupCell(sharedMaze.MazeMap[LastCell.y][LastCell.x]);
+                    }*/
+
+
                     switch (CurrentBtn){
                         case 1:
                             HasSolution = false;
                             sharedMaze.MazeMap[LastCell.y][LastCell.x].RemoveWall(tmpcw);
+                            break;
+
+                        case 2:
+                            //sharedMaze.MazeMap[LastCell.y][LastCell.x].GetGroup().AddGroupCell(sharedMaze.MazeMap[Currenty][Currentx]);
                             break;
 
                         case 3:

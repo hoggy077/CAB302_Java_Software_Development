@@ -204,6 +204,12 @@ public class MazeCell implements AStNode {
     public void SetActive(CellState state){ CurrentCellWalls.set(0, state.value); }
 
 
+    CellGroup grouping = null;
+    public boolean InGroup() {return grouping == null ? false : grouping.InGroup();}
+    public void SetGroup(CellGroup cg) {grouping = cg;}
+    public CellGroup GetGroup() {return grouping;}
+
+
     //region A⭐ integration
     /**
      * Provides a CellPosition class referring to the internal stored reference
@@ -249,11 +255,59 @@ public class MazeCell implements AStNode {
                 continue;
 
             MazeCell TemporaryCell = Map[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X +  wall.Direction.x];
-            if(!TemporaryCell.IsActive())   //If target isn't active
+            if(!TemporaryCell.IsActive())
                 continue;
 
             //If we want only accessible nodes, check the wall and add, else we want any, so add
             if(IsAccessible){
+                if(InGroup() && TemporaryCell.InGroup() && GetGroup() == TemporaryCell.GetGroup()){
+                    ArrayList<AStNode> tested = new ArrayList<>();
+                    tested.add(this);
+                    CardinalNeighbors.addAll( TemporaryCell.NeighborsNodes(true,tested) );
+                }
+
+                if(CheckWall(wall))
+                    continue;
+                else
+                    CardinalNeighbors.add(TemporaryCell);
+            }
+            else
+                CardinalNeighbors.add(TemporaryCell);
+        }
+
+        return CardinalNeighbors;
+        //#endregion
+    }
+
+    public ArrayList<AStNode> NeighborsNodes(boolean IsAccessible, ArrayList<AStNode> evals) {
+        MazeCell[][] Map = Parent.MazeMap;
+        ArrayList<AStNode> CardinalNeighbors = new ArrayList<>();
+
+        //#region Automated
+        for ( CellWall wall : CellWall.values() )
+        {
+            //if target it out of bounds
+            if(CurrentPos.Y + wall.Direction.y < 0 || CurrentPos.X + wall.Direction.x < 0)
+                continue;
+
+            if(CurrentPos.Y + wall.Direction.y >= Parent.Height || CurrentPos.X + wall.Direction.x >= Parent.Width)
+                continue;
+
+            MazeCell TemporaryCell = Map[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X +  wall.Direction.x];
+            if(!TemporaryCell.IsActive())
+                continue;
+
+            //If we want only accessible nodes, check the wall and add, else we want any, so add
+            if(IsAccessible){
+                if(evals.contains(TemporaryCell))
+                    continue;
+
+                if(InGroup() && TemporaryCell.InGroup() && GetGroup() == TemporaryCell.GetGroup()){
+                    evals.add(this);
+                    CardinalNeighbors.addAll( TemporaryCell.NeighborsNodes(true,evals) );
+                    continue;
+                }
+
                 if(CheckWall(wall))
                     continue;
                 else
@@ -266,33 +320,6 @@ public class MazeCell implements AStNode {
         return CardinalNeighbors;
         //#endregion
 
-        //#region Per cell layout - Deprecated
-        /*if(CurrentPos.Y - 1 >= 0) {//directly above
-            MazeCell tmpCellUp = Map[(int) CurrentPos.Y - 1][(int) CurrentPos.X];
-            if(tmpCellUp.IsActive())
-                CardinalNeighbors.add(tmpCellUp);
-        }
-
-        if(CurrentPos.Y + 1 >= 0) {//directly below
-            MazeCell tmpCellBelow = Map[(int) CurrentPos.Y + 1][(int) CurrentPos.X];
-            if(tmpCellBelow.IsActive())
-                CardinalNeighbors.add(tmpCellBelow);
-        }
-
-        if(CurrentPos.X - 1 >= 0) {//left
-            MazeCell tmpCellLeft = Map[(int) CurrentPos.Y][(int) CurrentPos.X - 1];
-            if(tmpCellLeft.IsActive())
-                CardinalNeighbors.add(tmpCellLeft);
-        }
-
-        if(CurrentPos.Y + 1 >= 0) {//right
-            MazeCell tmpCellRight = Map[(int) CurrentPos.Y][(int) CurrentPos.X + 1];
-            if(tmpCellRight.IsActive())
-                CardinalNeighbors.add(tmpCellRight);
-        }
-
-        return CardinalNeighbors;*/
-        //#endregion
     }
 
     @Override
