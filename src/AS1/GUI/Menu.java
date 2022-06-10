@@ -13,6 +13,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -106,17 +108,54 @@ public class Menu {
             public void actionPerformed(ActionEvent e) {
                 //calls method from dummy classes to draw
 
-                //--wrap stuff like this. Those input fields allow text, text wont parse. you need to catch that exception
+                if(MazeGUI != null)
+                    return;
+
                 try{
                     hsp = Integer.parseInt(HeightField.getText());
                     wsp = Integer.parseInt(WidthField.getText());
 
-                    MazeGUI = new MainGUI(new Maze(hsp,wsp));//--changed MainGUI so it auto sizes the render panel to fit the cells
+                    MazeGUI = new MainGUI(new Maze(hsp,wsp), aLogo.isSelected());
+                    MazeGUI.AddOnCloseListener(new WindowListener() {
+                        @Override
+                        public void windowOpened(WindowEvent e) {
+
+                        }
+
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+
+                        }
+
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            MazeGUI = null;
+                        }
+
+                        @Override
+                        public void windowIconified(WindowEvent e) {
+
+                        }
+
+                        @Override
+                        public void windowDeiconified(WindowEvent e) {
+
+                        }
+
+                        @Override
+                        public void windowActivated(WindowEvent e) {
+
+                        }
+
+                        @Override
+                        public void windowDeactivated(WindowEvent e) {
+
+                        }
+                    });
                 }
                 catch (NumberFormatException parseException){
                     JOptionPane.showMessageDialog(null, "Please enter both width and height in numbers");
 
-                    //--do something about the exception, or ignore them.
                 }
             }
         };

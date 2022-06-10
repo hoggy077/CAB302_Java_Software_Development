@@ -261,6 +261,20 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         sharedMaze.GeneratedMaze();
         RenderGrid();
     }
+
+    public void CreateGroup(CellPosition TopLeft, CellPosition BottomRight)
+    {
+        CellGroup group = new CellGroup();
+        for (int TargetY = (int) TopLeft.Y; TargetY <= (int) BottomRight.Y; TargetY++){
+            for (int TargetX = (int) TopLeft.X; TargetX <= (int) BottomRight.X; TargetX++){
+                //for each cell in the group
+                if(sharedMaze.MazeMap[TargetY][TargetX].InGroup())
+                    sharedMaze.MazeMap[TargetY][TargetX].GetGroup().ClearGroup();
+
+                group.AddGroupCell(sharedMaze.MazeMap[TargetY][TargetX]);
+            }
+        }
+    }
     //endregion
 
 

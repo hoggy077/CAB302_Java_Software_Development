@@ -255,6 +255,11 @@ public class MazeCell implements AStNode {
                 continue;
 
             MazeCell TemporaryCell = Map[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X +  wall.Direction.x];
+            if(TemporaryCell.InGroup() && TemporaryCell.GetPosition().X == Parent.Width-1 && TemporaryCell.GetPosition().Y == Parent.Height-1){
+                CardinalNeighbors.add(TemporaryCell);
+                break;
+            }
+
             if(!TemporaryCell.IsActive())
                 continue;
 
@@ -263,7 +268,13 @@ public class MazeCell implements AStNode {
                 if(InGroup() && TemporaryCell.InGroup() && GetGroup() == TemporaryCell.GetGroup()){
                     ArrayList<AStNode> tested = new ArrayList<>();
                     tested.add(this);
-                    CardinalNeighbors.addAll( TemporaryCell.NeighborsNodes(true,tested) );
+                    ArrayList<AStNode> nodes = TemporaryCell.NeighborsNodes(true,tested);
+                    for (AStNode node:nodes) {
+                        if(!CardinalNeighbors.contains(node))
+                            CardinalNeighbors.add(node);
+                    }
+
+                    continue;
                 }
 
                 if(CheckWall(wall))
@@ -294,6 +305,11 @@ public class MazeCell implements AStNode {
                 continue;
 
             MazeCell TemporaryCell = Map[(int) CurrentPos.Y + wall.Direction.y][(int) CurrentPos.X +  wall.Direction.x];
+            if(TemporaryCell.InGroup() && TemporaryCell.GetPosition().X == Parent.Width-1 && TemporaryCell.GetPosition().Y == Parent.Height-1){
+                CardinalNeighbors.add(TemporaryCell);
+                break;
+            }
+
             if(!TemporaryCell.IsActive())
                 continue;
 

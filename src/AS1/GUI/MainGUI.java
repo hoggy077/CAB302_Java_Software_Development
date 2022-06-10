@@ -1,13 +1,16 @@
 package AS1.GUI;
 
 import AS1.AStar.AStNode;
+import AS1.Maze.CellPosition;
 import AS1.Maze.Maze;
 import AS1.Maze.MazeCell;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowListener;
 
 public class MainGUI {
     final JFrame MazeFrame;
@@ -76,6 +79,19 @@ public class MainGUI {
         MazeRPanel.RenderGrid();
     }
 
+    public MainGUI(Maze Target, boolean AutoGroupCellsStart_End){
+        this(Target);
+        //These are for auto creating start and end image spaces
+        if(!AutoGroupCellsStart_End)
+            return;
+
+        MazeRPanel.CreateGroup(new CellPosition(0,0), new CellPosition(1,1));
+        MazeRPanel.CreateGroup(new CellPosition(Reference.Width-2,Reference.Height-2), new CellPosition(Reference.Width-1,Reference.Height-1));
+    }
+
+    public void AddOnCloseListener(WindowListener WindowListen){
+        MazeFrame.addWindowListener(WindowListen);
+    }
 
     public String RequestMazeCellString(){
         return Reference.GetCellString();
