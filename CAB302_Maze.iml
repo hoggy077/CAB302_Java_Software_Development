@@ -8,7 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library">
       <library name="JUnit5.8.1">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/junit-jupiter-5.8.1.jar!/" />
@@ -25,7 +25,15 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="xerial.sqlite.jdbc" level="project" />
-    <orderEntry type="library" name="ant-junitlauncher-1.10.12" level="project" />
     <orderEntry type="library" name="junit-platform-launcher-1.8.1" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/ant-junitlauncher-1.10.9.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
