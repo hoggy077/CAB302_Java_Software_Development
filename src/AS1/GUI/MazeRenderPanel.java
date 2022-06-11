@@ -58,10 +58,6 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         if(sharedMaze.Height >= 50 || sharedMaze.Width >= 50)
             WallWidth = 2;
 
-
-        TotalCellWidth = CellWidth + WallWidth * 2;
-        TotalCellHeight = CellHeight + WallWidth * 2;
-
         RenderGrid();
     }
 
@@ -106,7 +102,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
     //literally just renders the maze
     public void RenderGrid(){
-        int NewBufferH = TotalCellHeight * sharedMaze.Height + WallWidth * 2, NewBufferW = TotalCellWidth * sharedMaze.Width + WallWidth * 2;
+        int NewBufferH = TotalCellHeight() * sharedMaze.Height + WallWidth * 2, NewBufferW = TotalCellWidth() * sharedMaze.Width + WallWidth * 2;
         BufferedImage BImg2 = new BufferedImage(NewBufferW,NewBufferH,BufferedImage.TYPE_INT_ARGB);
 
         BImg = BImg2;
@@ -285,13 +281,13 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     Point LastCell = new Point();
     int CurrentBtn = 0;
 
-    int TotalCellWidth = CellWidth + WallWidth * 2;
-    int TotalCellHeight = CellHeight + WallWidth * 2;
+    int TotalCellWidth(){return CellWidth + WallWidth * 2; }
+    int TotalCellHeight(){return CellHeight + WallWidth * 2; }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         //region Debugging purposes
-        System.out.println(String.format("Button:%s\nPosition: %sx %sy", e.getButton(), Math.floor(e.getX()/TotalCellWidth), Math.floor(e.getY()/TotalCellHeight)));
+        System.out.println(String.format("Button:%s\nPosition: %sx %sy", e.getButton(), Math.floor(e.getX()/TotalCellWidth()), Math.floor(e.getY()/TotalCellHeight())));
         //endregion
     }
 
@@ -315,8 +311,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         {
             case 1:
                 if (SettingGroupImg){
-                    int TargetX = (int) Math.floor(e.getX() / TotalCellWidth);
-                    int TargetY = (int) Math.floor(e.getY() / TotalCellHeight);
+                    int TargetX = (int) Math.floor(e.getX() / TotalCellWidth());
+                    int TargetY = (int) Math.floor(e.getY() / TotalCellHeight());
                     try{
                         if(sharedMaze.MazeMap[TargetY][TargetX].InGroup()) {
                             sharedMaze.MazeMap[TargetY][TargetX].GetGroup().SetImage(ImgPath);
@@ -332,7 +328,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                     ImgPath = "";
                 }
                 else {
-                    LastCell = new Point((int) Math.floor(e.getX()/TotalCellWidth),(int) Math.floor(e.getY()/TotalCellHeight));
+                    LastCell = new Point((int) Math.floor(e.getX()/TotalCellWidth()),(int) Math.floor(e.getY()/TotalCellHeight()));
                     isDragging = true;
                 }
                 break;
@@ -340,7 +336,7 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
             case 3:
                 if (SettingGroupImg)
                     SettingGroupImg = false;
-                LastCell = new Point((int) Math.floor(e.getX()/TotalCellWidth),(int) Math.floor(e.getY()/TotalCellHeight));
+                LastCell = new Point((int) Math.floor(e.getX()/TotalCellWidth()),(int) Math.floor(e.getY()/TotalCellHeight()));
                 isDragging = true;
                 break;
 
@@ -357,8 +353,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 if (SettingGroupImg)
                     SettingGroupImg = false;
                 BuildingGroup = true;
-                GroupStartX = (int) Math.floor(e.getX() / TotalCellWidth);
-                GroupStartY = (int) Math.floor(e.getY() / TotalCellHeight);
+                GroupStartX = (int) Math.floor(e.getX() / TotalCellWidth());
+                GroupStartY = (int) Math.floor(e.getY() / TotalCellHeight());
                 break;
         }
     }
@@ -370,8 +366,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
 
         if(CurrentBtn == 2 && BuildingGroup){
             BuildingGroup = false;
-            GroupEndX = (int) Math.floor(e.getX() / TotalCellWidth);
-            GroupEndY = (int) Math.floor(e.getY() / TotalCellHeight);
+            GroupEndX = (int) Math.floor(e.getX() / TotalCellWidth());
+            GroupEndY = (int) Math.floor(e.getY() / TotalCellHeight());
 
             if(GroupEndX == GroupStartX && GroupEndY == GroupStartY)
                 if(sharedMaze.MazeMap[GroupStartY][GroupStartX].GetGroup() != null)
@@ -423,8 +419,8 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     @Override
     public void mouseDragged(MouseEvent e) {
         if(isDragging) {
-            int Currentx = (int) Math.floor(e.getX() / TotalCellWidth);
-            int Currenty = (int) Math.floor(e.getY() / TotalCellHeight);
+            int Currentx = (int) Math.floor(e.getX() / TotalCellWidth());
+            int Currenty = (int) Math.floor(e.getY() / TotalCellHeight());
 
             if (!LastCell.equals(new Point(Currentx, Currenty))) {
                 if (Currentx < sharedMaze.Width && Currenty < sharedMaze.Height) {

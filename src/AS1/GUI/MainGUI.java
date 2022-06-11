@@ -21,8 +21,21 @@ public class MainGUI {
         Reference = Target;
         MazeFrame = new JFrame("Cells-to-Paint");
         MazeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        MazeFrame.setMinimumSize(new Dimension(500,500));
+        //MazeFrame.setMinimumSize(new Dimension(500,500));
 
+
+        //Calculating minimum comfortable Height and Width
+        int WallCase = Reference.Height >= 50 || Reference.Width >= 50 ? 2 : 5;//5 is default wall width, 2 is our 50+ wall width since the maze walls are actually WallWidth*2
+        int MinWidth = 8 * Reference.Width+ WallCase * 2;//(7) * Reference.Width + WallCase * 2;
+        int MinHeight = 8 * Reference.Height+ WallCase * 2;//(7) * Reference.Height + WallCase * 2;
+
+        Dimension minDim = new Dimension(500,500);
+        if(MinHeight > 500)
+            minDim.height = MinHeight;
+        if(MinWidth > 500)
+            minDim.width = MinWidth;
+
+        //MazeFrame.setMinimumSize(new Dimension(500,500));
         MazeFrame.getContentPane().addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -46,12 +59,10 @@ public class MainGUI {
             }
         });
 
-
         MazeFrame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-
-        MazeRenderPanel MazePanel = new MazeRenderPanel(MazeFrame.getMinimumSize(), Reference);
+        MazeRenderPanel MazePanel = new MazeRenderPanel(minDim, Reference);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = 1;
@@ -64,19 +75,15 @@ public class MainGUI {
         MazePanel.setBackground(Color.BLACK);
         MazeFrame.add(MazePanel,gbc);
         MazeRPanel = (MazeRenderPanel)MazeFrame.getContentPane().getComponent(0);
+        MazeRPanel.setPreferredSize(minDim);
 
         MazePanel.addMouseListener(MazePanel);
         MazePanel.addMouseMotionListener(MazePanel);
         MazeFrame.setVisible(true);
 
-        //Dimension d = new Dimension();
-        //d.height = (MazePanel.TotalCellHeight * Target.Height) + (MazePanel.WallWidth * 2);
-        //d.width = (MazePanel.TotalCellWidth * Target.Width) + (MazePanel.WallWidth * 2);
-
-        //MazeRPanel.setPreferredSize(d);
-        MazeRPanel.setPreferredSize(new Dimension(MazeFrame.getContentPane().getWidth(),MazeFrame.getContentPane().getHeight()));
-        MazeFrame.pack();
         MazeRPanel.RenderGrid();
+        MazeFrame.pack();
+        MazeFrame.setMinimumSize(MazeFrame.getSize());
     }
 
     public MainGUI(Maze Target, boolean AutoGroupCellsStart_End){
