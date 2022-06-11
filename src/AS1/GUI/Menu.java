@@ -364,6 +364,11 @@ public class Menu {
         GuiFrame.setVisible(true);
     }
 
+    /**
+     * Method to return difficulty of maze (Beginner, Easy, Medium, Hard)
+     * @return - difficulty
+     */
+
     public String requestDifficulty(){
         int solution = MazeGUI.RequestSolutionCount();
         System.out.println(solution);
@@ -393,6 +398,11 @@ public class Menu {
         return difficulty;
 
     }
+
+    /**
+     * Method to return file path as a string
+     * @return - file path
+     */
 
     //opens up window to select a file, returns the path as a string
     public String getFilepathString(){
@@ -429,7 +439,11 @@ public class Menu {
         return Path;
     }
 
-
+    /**
+     * Method to return file extension
+     * @param CompleteName - name of extension
+     * @return - file extension
+     */
     static String GetExtension(String CompleteName){
         String[] r = CompleteName.split("\\.");
         return ".".concat(r[r.length-1]).toLowerCase();
