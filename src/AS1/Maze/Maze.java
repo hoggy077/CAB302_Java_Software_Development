@@ -16,9 +16,9 @@ public class Maze {
     public final int Width;
 
     /**
-     * Generates a maze of Height × Width, within 100. This will auto populate the maze with cells.
-     * @param Height Integer in the bounds of 0 < Height <= 100
-     * @param Width Integer in the bounds of 0 < Width <= 100
+     * Generates a maze of Height × Width, within 10 and 100. This will auto populate the maze with cells.
+     * @param Height Integer in the bounds of 10 {@literal <}= Height {@literal <}= 100
+     * @param Width Integer in the bounds of 10 {@literal <}= Width {@literal <}= 100
      */
     public Maze(int Height, int Width) throws IllegalArgumentException{
         if (Height < 10 || Height > 100 || Width > 100 || Width < 10){
@@ -31,6 +31,12 @@ public class Maze {
         PopulateMap();
     }
 
+    /**
+     * Generates a maze of Height × Width, within 10 and 100. This maze is updated to match the data in CellBytes
+     * @param Height Integer in the bounds of 10 {@literal <}= Height {@literal <}= 100
+     * @param Width Integer in the bounds of 10 {@literal <}= Width {@literal <}= 100
+     * @param CellBytes A string representative of the Maze. Refer to {@link MazeCell#CurrentCellWalls} for the layout of bits per cell
+     */
     public Maze(int Height, int Width, String CellBytes)
     {
         if (Height < 10 || Height > 100 || Width > 100 || Width < 10){
@@ -61,6 +67,9 @@ public class Maze {
         }
     }
 
+    /**
+     * @return A string of bits. 5 bits refers to 1 cell. Refer to {@link MazeCell#CurrentCellWalls} for the layout of bits per cell
+     */
     public String GetCellString(){
         String Result = "";
         for (int y = 0; y < Height; y++){
@@ -71,6 +80,9 @@ public class Maze {
         return Result;
     }
 
+    /**
+     * Is used to populate the maze map with cells
+     */
     private void PopulateMap(){
         for (int X = 0; X < Width; X++){
             for (int Y = 0; Y < Height; Y++){
@@ -80,19 +92,17 @@ public class Maze {
     }
 
     //region Maze generation
-    //Based on Randomized Prim's algorithm
-    List<MazeCell> OpenHeap = new ArrayList<MazeCell>();
-    List<MazeCell> ClosedHeap = new ArrayList<MazeCell>();
+    /**
+     * Generates a Maze from the current map by using Recursive Backtracking
+     * This function will reset the maze prior to generation
+     */
     public void GeneratedMaze(){
         Random rnd = new Random();
-        int OriginX = rnd.nextInt(Width), OriginY = rnd.nextInt( Height);
-
         for (int y = 0; y < Height; y++){
             for (int x = 0; x < Width; x++){
                 MazeMap[y][x].ResetCell();
             }
         }
-
 
         ArrayList<MazeCell> Visited = new ArrayList<>();
         ArrayDeque<MazeCell> HistoryStack = new ArrayDeque<>();
@@ -132,12 +142,23 @@ public class Maze {
     //endregion
 
     //region Utility
+
+    /**
+     * @param x An Int referring to the position being tested
+     * @param y An Int referring to the position being tested
+     * @return True if the provided X and Y positions are within the bounds of the current maze
+     */
     public boolean Inbounds(int x, int y){
         return x >= 0 && x < Width && y >= 0 && y < Height;
     }
     //endregion
 
     //region Solving
+
+    /**
+     * Provides an internal wrapper for {@link AstarSolver#FindPath(AStNode, AStNode)} that predefines the start and end goals as the upper left and lower right cells.
+     * @return returns the result of {@link AstarSolver#FindPath(AStNode, AStNode)}
+     */
     public AStNode FindSolution() {
         return AstarSolver.FindPath(MazeMap[0][0], MazeMap[Height-1][Width-1]);
     }

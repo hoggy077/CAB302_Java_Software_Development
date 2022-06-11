@@ -10,6 +10,12 @@ public class AstarSolver {
     static ArrayList<AStNode> OpenHeap = new ArrayList<>();
     static ArrayList<AStNode> ClosedHeap = new ArrayList<>();
 
+    /**
+     * Uses an A* Pathfinding algorithm to traverse the next closest cell to the target.
+     * @param start Is the stating node that extends {@link AStNode}
+     * @param End Is the target node that extends {@link AStNode}
+     * @return Returns a {@link AStNode} or null. If null, a path could not be found to the End, otherwise, the Node is the End and now has a parent accessible via GetParent(). By traversing each parent till the start node is reached you can create a path.
+     */
     public static AStNode FindPath(AStNode start, AStNode End){
         OpenHeap.clear();
         ClosedHeap.clear();

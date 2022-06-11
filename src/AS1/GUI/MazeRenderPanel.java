@@ -42,13 +42,27 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     int CellWidth = 45;
     int CellHeight = 45;
 
+    /**
+     * Provides a default constructor for a MazeRenderPanel
+     * @param shared Is a reference to the {@link Maze Maze} linked to this renderer
+     */
     public MazeRenderPanel(Maze shared){ sharedMaze = shared;  }
 
+    /**
+     * This constructor is used when requiring an immediate WindowUpdate call
+     * @param ParentSize Represents the {@link Dimension dimension} of the space to be resized to.
+     * @param shared Is a reference to the {@link Maze Maze} linked to this renderer
+     */
     public MazeRenderPanel(Dimension ParentSize, Maze shared){
         sharedMaze = shared;
         WindowUpdate(ParentSize.width, ParentSize.height);
     }
 
+    /**
+     * Used to update internal variables relating to size of a size in both orientations
+     * @param XSize The Width of the area to resize to in pixels
+     * @param YSize The Height of the area to resize to in pixels
+     */
     public void WindowUpdate(int XSize, int YSize){
         XSize -= WallWidth * 2;
         YSize -= WallWidth * 2;
@@ -68,8 +82,19 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     boolean HasSolution = false;
     AStNode StartN, EndPath;
     int CurrentMinimumCells = 0;
+
+    /**
+     * The value returned is only updated when being rendered to the panel, other wise it will return the previous rendered solution
+     * @return Returns an integer representing the number of cells traversed by {@link #RenderSolution(AStNode, AStNode) RenderSolution}
+     */
     public int GetMinimumSolution() {return  CurrentMinimumCells;}
-    public void RenderSolution(AStNode StartNode, AStNode Path){
+
+    /**
+     * It is called by {@link #RenderGrid() RenderGrid} to draw the path onto the current active maze
+     * @param StartNode Represents the {@link AStNode AStar Node} that pathfinding began at.
+     * @param Path Represents the final {@link AStNode AStar Node} that was traversed. This will only ever be called with the end target.
+     */
+    void RenderSolution(AStNode StartNode, AStNode Path){
         HasSolution = true;
         StartN = StartNode;
         EndPath = Path;
@@ -100,7 +125,10 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         repaint();
     }
 
-    //literally just renders the maze
+    /**
+     * RenderGrid is the primary update function for rendering anything related to the Maze.
+     * When called this will update the {@link MazeRenderPanel Panels} internal buffer, and will handle replacing all cells, walls, groups, group images, arrows and paths.
+     */
     public void RenderGrid(){
         int NewBufferH = TotalCellHeight() * sharedMaze.Height + WallWidth * 2, NewBufferW = TotalCellWidth() * sharedMaze.Width + WallWidth * 2;
         BufferedImage BImg2 = new BufferedImage(NewBufferW,NewBufferH,BufferedImage.TYPE_INT_ARGB);
@@ -203,7 +231,11 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         repaint();
     }
 
-    //literally just adds the wall render in
+    /**
+     * Used to visually update a cell wall within the maze
+     * @param Cell Refers to a {@link MazeCell cell} within a {@link Maze Maze}
+     * @param Direction Refers to a {@link MazeCell.CellWall CellWall} that presents as a relative direction from the cell
+     */
     public void UpdateCellWall(MazeCell Cell, MazeCell.CellWall Direction){
         int Cell_xs, Cell_ys, x, y;
         x = (int) Cell.GetPosition().X;
@@ -238,7 +270,10 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         repaint();
     }
 
-    //literally just saves the buffer to an image file
+    /**
+     * Provided a string path containing the file name without an extension, this will remove a rendered solution, and save the current maze
+     * @param CompletePath the complete path of a file without the extension
+     */
     public void SaveBuffer2File(String CompletePath){
         HasSolution = false;
         RenderGrid();
@@ -251,6 +286,9 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         }
     }
 
+    /**
+     * AutoGenWrap is a public wrapper for auto generation of the internal {@link Maze Maze} reference.
+     */
     public void AutoGenWrap()
     {
         HasSolution = false;
@@ -258,6 +296,12 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
         RenderGrid();
     }
 
+    /**
+     * CreateGroup is used to force create groups outside of {@link #mousePressed(MouseEvent) Mouse Press} and {@link #mouseReleased(MouseEvent) Mouse Release}
+     * This function, unlike, mouse events, does not have any checks to handle incorrectly oriented parameters
+     * @param TopLeft Must be a {@link CellPosition CellPosition} where either axis is less than or equal to its respective value in BottomRight
+     * @param BottomRight Must be a {@link CellPosition CellPosition} where either axis is greater than or equal to its respective value in TopLeft
+     */
     public void CreateGroup(CellPosition TopLeft, CellPosition BottomRight)
     {
         CellGroup group = new CellGroup();
@@ -287,13 +331,18 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
     @Override
     public void mouseClicked(MouseEvent e) {
         //region Debugging purposes
-        System.out.println(String.format("Button:%s\nPosition: %sx %sy", e.getButton(), Math.floor(e.getX()/TotalCellWidth()), Math.floor(e.getY()/TotalCellHeight())));
+        //System.out.println(String.format("Button:%s\nPosition: %sx %sy", e.getButton(), Math.floor(e.getX()/TotalCellWidth()), Math.floor(e.getY()/TotalCellHeight())));
         //endregion
     }
 
 
     boolean SettingGroupImg = false;
     String ImgPath = "";
+
+    /**
+     * Sets the required variables to identify the next left click as an image set
+     * @param Path Must be the path of an image, either relative or complete, and must include the extension
+     */
     public void SetGroupImg(String Path){
         ImgPath = Path;
         SettingGroupImg = true;
@@ -341,15 +390,6 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 break;
 
             case 2:
-                //region Solution render test
-                /*System.out.println("mhm");
-                AStNode solution = sharedMaze.FindSolution();
-                if(solution == null){
-                    System.out.println("Solution not found");
-                    break;
-                }
-                RenderSolution(sharedMaze.MazeMap[0][0], solution);*/
-                //endregion
                 if (SettingGroupImg)
                     SettingGroupImg = false;
                 BuildingGroup = true;

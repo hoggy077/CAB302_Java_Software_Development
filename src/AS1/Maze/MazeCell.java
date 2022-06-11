@@ -19,6 +19,11 @@ public class MazeCell implements AStNode {
     //10000 = Inactive. At this point the other bits have no value, design accordingly
     //endregion
     //region Class variables
+    /**
+     * CurrentCellWalls represents the cell walls and state.
+     * Bit 0 refers to the Active state, where 0 is active, and 1 is inactive
+     * Bit 1-4 refers to individual walls in the order, Left, Right, Up, Down. 1 represents a wall, and 0 represents no wall.
+     */
     private BitSet CurrentCellWalls = new BitSet(5);
     private CellPosition CurrentPos;
     private Maze Parent;
@@ -26,6 +31,11 @@ public class MazeCell implements AStNode {
     //endregion
 
     //region Cell related enums
+
+    /**
+     * CellWall is an Enum of DOWN, UP, RIGHT, LEFT.
+     * These Enums contain a Int and Point referring to their respective bit and direction.
+     */
     public enum CellWall{
         DOWN(4, new Point(0, 1)),
         UP(3, new Point(0, -1)),
@@ -43,6 +53,10 @@ public class MazeCell implements AStNode {
             }
         }
     }
+
+    /**
+     * Similar to {@link CellWall}, CellState contains an Int and Boolean referring to their respective bit and the desired state of the bit
+     */
     public enum CellState{
         ACTIVE(0, false),
         INACTIVE(0,true);
@@ -171,7 +185,7 @@ public class MazeCell implements AStNode {
         return null;
     }
 
-    //this just converts a point direction to a wall, its used for the UI system to turn dragging from cell to cell into a wall to be used
+
     /**
      * Provides a function to convert a Point vector into a CellWall, this should be only for UI to MazeCell methods
      * @param Direction Point in the format of -1 to 1. -1 refers to the left or up, 1 refers to right or down
@@ -199,22 +213,30 @@ public class MazeCell implements AStNode {
 
     /**
      * Sets the cell to a specific state
-     * @param state
+     * @param state The {@link CellState} to change to
      */
     public void SetActive(CellState state){ CurrentCellWalls.set(0, state.value); }
 
 
     CellGroup grouping = null;
+
+    /**
+     * @return If the cell is currently in a group
+     */
     public boolean InGroup() {return grouping == null ? false : grouping.InGroup();}
+
+    /**
+     * @param cg Sets the group of the cell to cg
+     */
     public void SetGroup(CellGroup cg) {grouping = cg;}
+
+    /**
+     * @return The cells current group
+     */
     public CellGroup GetGroup() {return grouping;}
 
 
     //region A⭐ integration
-    /**
-     * Provides a CellPosition class referring to the internal stored reference
-     * @return
-     */
     @Override
     public CellPosition GetPosition(){ return CurrentPos;}
 
