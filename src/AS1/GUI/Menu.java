@@ -79,7 +79,7 @@ public class Menu {
 
 
         //Auto place logo on maze start radio button for scratch tab
-        JRadioButton aLogo = new JRadioButton("Auto place logo");
+        JRadioButton aLogo = new JRadioButton("Auto place images");
         MfromScratch.add(aLogo);
 
         //Place logo button for scratch tab
@@ -394,6 +394,9 @@ public class Menu {
         if (asd < .35) {
             difficulty = "Beginner";
 
+        }
+        if(asd == 0){
+            difficulty = "Unsolved";
         }
         return difficulty;
 
