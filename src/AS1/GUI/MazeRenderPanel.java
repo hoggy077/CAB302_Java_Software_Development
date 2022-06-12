@@ -164,6 +164,9 @@ public class MazeRenderPanel extends JPanel implements MouseListener, MouseMotio
                 Cell_xs = ((WallWidth *2) * (x+1)) + (CellWidth * x);
                 Cell_ys = ((WallWidth *2) * (y+1)) + (CellHeight * y);
 
+                if(!sharedMaze.MazeMap[y][x].IsActive())
+                    continue;
+
                 RenderingGraphics.fillRect(Cell_xs, Cell_ys, CellWidth, CellHeight);//Render the cell center
 
                 for (MazeCell.CellWall wall : MazeCell.CellWall.values()){
